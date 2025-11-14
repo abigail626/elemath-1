@@ -89,13 +89,11 @@ if st.session_state.stage == 1:
     st.write("""
     **분수의 나눗셈 - 기초 단계**
     
-    두 분수를 나눌 때는 다음과 같이 계산해요:
-    
-    예: $\\frac{3}{4} \\div \\frac{1}{2} = \\frac{3 \\times 2}{4 \\times 1} = \\frac{6}{4} = \\frac{3}{2}$
-    
-    하지만 처음에는 **분모끼리 나누어 떨어지는** 문제만 풀어요!
+    이번 단계에서는 **분모끼리 나누어 떨어지는** 분수의 나눗셈을 풀어볼 거예요!
     
     예: $\\frac{6}{8} \\div \\frac{3}{4}$ → 분모 8과 4 (8÷4=2)
+    
+    문제를 풀고 나면 풀이과정을 배울 수 있어요! 📚
     """)
     
     # 새 문제 생성
@@ -113,24 +111,18 @@ if st.session_state.stage == 1:
     $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$
     """)
     
-    # 풀이 과정 표시
-    with st.expander("💡 풀이 과정 보기"):
+    # 힌트 표시 (풀이 과정은 숨김)
+    with st.expander("💡 힌트 보기"):
         st.write(f"""
-        **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요
+        **분모끼리 어떤 관계가 있을까요?**
         
-        $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
+        분모1: {problem['denominator1']}
+        분모2: {problem['denominator2']}
         
-        **Step 2:** 나눗셈을 곱셈으로 바꿔요
+        한쪽 분모가 다른 쪽 분모로 나누어떨어져요!
+        {problem['denominator1']} ÷ {problem['denominator2']} = {problem['denominator1'] // problem['denominator2']}
         
-        $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} = \\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
-        
-        **Step 3:** 분자끼리, 분모끼리 곱해요
-        
-        $$= \\frac{{{problem['numerator1']} \\times {problem['denominator2']}}}{{{problem['denominator1']} \\times {problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
-        
-        **Step 4:** 약분해요
-        
-        $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
+        정답을 맞춘 후에 풀이 과정을 배워볼 수 있어요! 🎯
         """)
     
     # 답 입력
@@ -153,6 +145,28 @@ if st.session_state.stage == 1:
                 'correct': True
             })
             st.session_state.current_problem = None
+            
+            # 정답 시 풀이 과정 표시
+            st.write("### 📖 이렇게 풀이해요!")
+            st.write(f"""
+            **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요
+            
+            $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
+            
+            **Step 2:** 나눗셈을 곱셈으로 바꿔요
+            
+            $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} = \\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
+            
+            **Step 3:** 분자끼리, 분모끼리 곱해요
+            
+            $$= \\frac{{{problem['numerator1']} \\times {problem['denominator2']}}}{{{problem['denominator1']} \\times {problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
+            
+            **Step 4:** 약분해요
+            
+            $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
+            
+            💡 **중요:** 나눗셈을 곱셈으로 바꾸는 것이 분수 나눗셈의 비결이에요! ⭐
+            """)
             
             if st.session_state.correct_count >= 3:
                 st.info("🚀 3문제를 맞췄어요! 다음 단계로 진행해보세요.")
