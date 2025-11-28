@@ -20,15 +20,26 @@ if 'problem_history' not in st.session_state:
 def generate_divisible_problem():
     """나누어지는 분수 문제 생성 (단계 1)"""
     # 분자는 1-9, 분모는 2-12 범위에서 선택
-    numerator1 = random.randint(1, 9)
+    # 분자와 분모는 같은 홀/짝 관계가 되도록(예: 둘 다 짝수 또는 둘 다 홀수)
     denominator1 = random.randint(2, 12)
-    
+    # denominator1의 홀짝에 맞는 numerator1 선택
+    if denominator1 % 2 == 0:
+        # 짝수이면 분자도 짝수(2,4,6,8)
+        numerator1 = random.choice([2,4,6,8])
+    else:
+        # 홀수이면 분자도 홀수(1,3,5,7,9)
+        numerator1 = random.choice([1,3,5,7,9])
+
     # 두 번째 분수는 분모가 첫 번째 분모의 약수가 되도록
-    divisors = [i for i in range(1, denominator1 + 1) if denominator1 % i == 0]
-    if len(divisors) > 1:
-        divisors.pop(0)  # 1 제외
+    divisors = [i for i in range(2, denominator1 + 1) if denominator1 % i == 0]
+    if not divisors:
+        divisors = [1, denominator1]
     denominator2 = random.choice(divisors)
-    numerator2 = random.randint(1, 9)
+    # denominator2의 홀짝에 맞는 numerator2 선택
+    if denominator2 % 2 == 0:
+        numerator2 = random.choice([2,4,6,8])
+    else:
+        numerator2 = random.choice([1,3,5,7,9])
     
     # 실제 나눗셈 결과 계산
     result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
@@ -96,11 +107,16 @@ if st.session_state.stage == 1:
     문제를 풀고 나면 풀이과정을 배울 수 있어요! 📚
     """)
     
-    # 새 문제 생성
-    if st.session_state.current_problem is None:
-        st.session_state.current_problem = generate_divisible_problem()
-    
-    problem = st.session_state.current_problem
+    # 1단계에서는 연속 3문제를 풀도록 구성
+    if 'stage1_problems' not in st.session_state or len(st.session_state.get('stage1_problems', [])) < 3:
+        st.session_state.stage1_problems = [generate_divisible_problem() for _ in range(3)]
+        st.session_state.stage1_index = 0
+        st.session_state.stage1_attempts = 0
+
+    problem_index = st.session_state.stage1_index
+    problem = st.session_state.stage1_problems[problem_index]
+
+    st.info(f"문제 {problem_index + 1} / 3")
     
     # 문제 출제
     st.write(f"""
@@ -129,12 +145,13 @@ if st.session_state.stage == 1:
     st.write("### 답을 입력하세요")
     col1, col2 = st.columns(2)
     with col1:
-        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage1_{id(problem)}")
+        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage1_{problem_index}")
     with col2:
-        user_denominator = st.number_input("분모", min_value=1, value=1, key=f"den_stage1_{id(problem)}")
+        user_denominator = st.number_input("분모", min_value=1, value=1, key=f"den_stage1_{problem_index}")
     
     # 답 제출
     if st.button("✓ 답 제출", key="submit_stage1"):
+        # 정답 검사
         if check_answer(user_numerator, user_denominator, 
                        problem['result_num'], problem['result_den']):
             st.success("🎉 정답입니다!")
@@ -144,47 +161,35 @@ if st.session_state.stage == 1:
                 'problem': problem,
                 'correct': True
             })
-            st.session_state.current_problem = None
-            
-            # 정답 시 풀이 과정 표시
-            st.write("### 📖 이렇게 풀이해요!")
-            st.write(f"""
-            **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요
-            
-            $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
-            
-            **Step 2:** 뒤집은 분수를 이용해 계산을 진행해요
 
-            $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} = \\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
-            
-            **Step 3:** 분자끼리, 분모끼리 곱해요
-            
-            $$= \\frac{{{problem['numerator1']} \\times {problem['denominator2']}}}{{{problem['denominator1']} \\times {problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
-            
-            **Step 4:** 약분해요
-            
-            $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
-            
-            💡 **중요:** 분수를 차근차근 정리하고 약분하는 연습이 중요해요! ⭐
-            """)
-            
-            if st.session_state.correct_count >= 3:
-                st.info("🚀 3문제를 맞췄어요! 다음 단계로 진행해보세요.")
+            # 다음 문제로 이동
+            st.session_state.stage1_index += 1
+            st.session_state.stage1_attempts = 0
+
+            if st.session_state.stage1_index >= 3:
+                st.info("🚀 3문제를 모두 맞췄어요! 다음 단계로 진행해보세요.")
                 if st.button("다음 단계로 이동 →"):
                     st.session_state.stage = 2
+                    # 정리
                     st.session_state.current_problem = None
                     st.rerun()
             else:
-                st.write(f"앞으로 {3 - st.session_state.correct_count}문제만 더 맞추면 다음 단계로 갈 수 있어요!")
+                st.write(f"다음 문제로 넘어갑니다: {st.session_state.stage1_index + 1}번 문제")
                 if st.button("다음 문제", key="next_stage1"):
-                    st.session_state.current_problem = None
                     st.rerun()
         else:
-            st.error("❌ 틀렸어요. 다시 한 번 풀어보세요!")
-            st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
-            if st.button("다시 풀기", key="retry_stage1"):
-                st.session_state.current_problem = None
-                st.rerun()
+            # 오답 처리: 첫 번째 오답일 때는 정답을 숨기고, 두 번째 오답부터 정답을 보여줌
+            st.session_state.stage1_attempts += 1
+            attempts = st.session_state.stage1_attempts
+            if attempts == 1:
+                st.error("❌ 틀렸어요. 힌트를 확인하고 다시 시도해보세요!")
+                if st.button("다시 풀기", key="retry_stage1_a"):
+                    st.rerun()
+            else:
+                st.error("❌ 또 틀렸어요. 아래에 정답을 참고하세요.")
+                st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
+                if st.button("다시 풀기", key="retry_stage1_b"):
+                    st.rerun()
 
 # ========== 단계 2: 심화 단계 (나누어지지 않는 분수) ==========
 elif st.session_state.stage == 2:
@@ -304,12 +309,4 @@ elif st.session_state.stage == 2:
                 st.session_state.current_problem = None
                 st.rerun()
 
-# 하단 정보
-st.divider()
-st.write("### 📖 학습 팁")
-st.write("""
-- **분수의 나눗셈 = 역수와의 곱셈**
-- 두 번째 분수의 분자와 분모를 바꾸는 것이 핵심이에요!
-- 항상 약분을 잊지 말아요!
-- 천천히 단계별로 풀어보세요! 🌟
-""")
+# (학습 팁 섹션이 제거되었습니다)
