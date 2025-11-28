@@ -131,6 +131,30 @@ def generate_non_divisible_problem():
         'result_den': result.denominator
     }
 
+
+def make_practice_problems(example_problem, n=3):
+    """예시 문제와 중복되지 않고 서로 다른 연습문제 n개 생성.
+    무한 루프 방지를 위해 시도 횟수를 제한합니다.
+    """
+    problems = []
+    seen = set()
+    attempts = 0
+    while len(problems) < n and attempts < 1000:
+        p = generate_non_divisible_problem()
+        key = (p['numerator1'], p['denominator1'], p['numerator2'], p['denominator2'])
+        ex_key = (example_problem['numerator1'], example_problem['denominator1'], example_problem['numerator2'], example_problem['denominator2'])
+        attempts += 1
+        if key == ex_key:
+            continue
+        if key in seen:
+            continue
+        seen.add(key)
+        problems.append(p)
+    # 부족하면 기존 방식으로 채움(중복 허용)
+    while len(problems) < n:
+        problems.append(generate_non_divisible_problem())
+    return problems
+
 def check_answer(user_num, user_den, correct_num, correct_den):
     """사용자 답 검증"""
     # 기약분수로 변환하여 비교
@@ -308,7 +332,8 @@ elif st.session_state.stage == 2:
     problem = st.session_state.stage2_problem
 
     # 예시 문제 및 선택 버튼은 연습 모드가 활성화되어 있지 않을 때만 보여줍니다.
-    if not st.session_state.get('stage2_practice_mode', False):
+    # (플래그 또는 연습문제 리스트가 있으면 예시를 숨김)
+    if not (st.session_state.get('stage2_practice_mode', False) or 'stage2_practice_problems' in st.session_state):
         # 문제 표시
         st.write(f"### 예시 문제\n\n$$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$")
 
@@ -419,7 +444,7 @@ elif st.session_state.stage == 2:
                     """)
                     # 정답을 맞춘 뒤 연습 문제 3개를 풀어볼 수 있도록 안내 버튼 제공
                     if st.button("연습문제 3개 풀기", key="stage2_start_practice_from_single"):
-                        st.session_state.stage2_practice_problems = [generate_non_divisible_problem() for _ in range(3)]
+                        st.session_state.stage2_practice_problems = make_practice_problems(problem, 3)
                         st.session_state.stage2_practice_index = 0
                         st.session_state.stage2_practice_attempts = 0
                         st.session_state.stage2_practice_solved_one = False
@@ -460,7 +485,7 @@ elif st.session_state.stage == 2:
         if st.button("이제 풀 수 있다 (답 입력)", key="stage2_switch_to_can"):
             st.session_state.stage2_choice = 'can'
             # 연습 문제 3개를 추가로 생성하도록 초기화 (사용자가 '풀 수 없다'를 보고 '이제 풀 수 있다'를 선택했을 때)
-            st.session_state.stage2_practice_problems = [generate_non_divisible_problem() for _ in range(3)]
+            st.session_state.stage2_practice_problems = make_practice_problems(problem, 3)
             st.session_state.stage2_practice_index = 0
             st.session_state.stage2_practice_attempts = 0
             st.session_state.stage2_practice_solved_one = False
