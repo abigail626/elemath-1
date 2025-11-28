@@ -19,27 +19,35 @@ if 'problem_history' not in st.session_state:
 
 def generate_divisible_problem():
     """나누어지는 분수 문제 생성 (단계 1)"""
-    # 분자는 1-9, 분모는 2-12 범위에서 선택
-    # 분자와 분모는 같은 홀/짝 관계가 되도록(예: 둘 다 짝수 또는 둘 다 홀수)
+    # 분모는 2-12 범위에서 선택
+    # 분자와 분모는 같은 홀/짝 관계(예: 둘 다 짝수 또는 둘 다 홀수)를 사용
     denominator1 = random.randint(2, 12)
-    # denominator1의 홀짝에 맞는 numerator1 선택
-    if denominator1 % 2 == 0:
-        # 짝수이면 분자도 짝수(2,4,6,8)
-        numerator1 = random.choice([2,4,6,8])
-    else:
-        # 홀수이면 분자도 홀수(1,3,5,7,9)
-        numerator1 = random.choice([1,3,5,7,9])
 
     # 두 번째 분수는 분모가 첫 번째 분모의 약수가 되도록
     divisors = [i for i in range(2, denominator1 + 1) if denominator1 % i == 0]
     if not divisors:
         divisors = [1, denominator1]
     denominator2 = random.choice(divisors)
+
     # denominator2의 홀짝에 맞는 numerator2 선택
     if denominator2 % 2 == 0:
         numerator2 = random.choice([2,4,6,8])
     else:
         numerator2 = random.choice([1,3,5,7,9])
+
+    # denominator1의 홀짝에 맞는 numerator1 후보에서
+    # 가능하면 numerator2보다 크거나 같은 수를 선택해 계산을 쉽게 함
+    if denominator1 % 2 == 0:
+        candidates = [2,4,6,8]
+    else:
+        candidates = [1,3,5,7,9]
+
+    larger_or_equal = [c for c in candidates if c >= numerator2]
+    if larger_or_equal:
+        numerator1 = random.choice(larger_or_equal)
+    else:
+        # 후보 중 더 큰 수가 없으면 가능한 최대값을 사용
+        numerator1 = max(candidates)
     
     # 실제 나눗셈 결과 계산
     result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
