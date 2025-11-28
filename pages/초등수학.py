@@ -363,18 +363,20 @@ elif st.session_state.stage == 2:
                     $$= \\frac{{{practice['result_num']}}}{{{practice['result_den']}}}$$
                     """)
 
-                    # 정답을 맞추면 다음 연습 문제로 이동할 수 있도록 인덱스 증가
-                    if st.session_state.stage2_practice_index < len(st.session_state.stage2_practice_problems) - 1:
-                        if st.button("다음 연습 문제", key=f"stage2_prac_next_{idx}"):
-                            st.session_state.stage2_practice_index += 1
-                            st.session_state.stage2_practice_attempts = 0
-                            safe_rerun()
-                    # 한 문제를 맞추면 '다음 페이지'로 이동할 수 있는 버튼 노출 (요청한 동작)
+                    # 한 문제를 맞추면 '다음 페이지로 이동 →' 버튼으로 다음 연습문제(또는 완료)를 제어합니다.
                     if st.session_state.stage2_practice_solved_one:
-                        st.success("한 문제를 맞추셨습니다 — 다음 페이지로 이동할 수 있습니다.")
+                        st.success("한 문제를 맞추셨습니다.")
                         if st.button("다음 페이지로 이동 →", key="stage2_finish"):
-                            st.session_state.stage2_completed = True
-                            safe_rerun()
+                            # 아직 남은 연습 문제가 있으면 다음 연습문제로 이동
+                            if st.session_state.stage2_practice_index < len(st.session_state.stage2_practice_problems) - 1:
+                                st.session_state.stage2_practice_index += 1
+                                st.session_state.stage2_practice_attempts = 0
+                                st.session_state.stage2_practice_solved_one = False
+                                safe_rerun()
+                            else:
+                                # 모두 풀었으면 완료 플래그 설정
+                                st.session_state.stage2_completed = True
+                                safe_rerun()
                 else:
                     st.session_state.stage2_practice_attempts += 1
                     attempts = st.session_state.stage2_practice_attempts
