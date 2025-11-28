@@ -307,20 +307,22 @@ elif st.session_state.stage == 2:
 
     problem = st.session_state.stage2_problem
 
-    # 문제 표시
-    st.write(f"### 예시 문제\n\n$$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$")
+    # 예시 문제 및 선택 버튼은 연습 모드가 활성화되어 있지 않을 때만 보여줍니다.
+    if 'stage2_practice_problems' not in st.session_state:
+        # 문제 표시
+        st.write(f"### 예시 문제\n\n$$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$")
 
-    # 선택: 풀 수 있다 / 풀 수 없다
-    col_a, col_b = st.columns(2)
-    with col_a:
-        if st.button("풀 수 있다", key="can_solve"):
-            st.session_state.stage2_choice = 'can'
-            st.session_state.stage2_attempts = 0
-            safe_rerun()
-    with col_b:
-        if st.button("풀 수 없다", key="cannot_solve"):
-            st.session_state.stage2_choice = 'cannot'
-            safe_rerun()
+        # 선택: 풀 수 있다 / 풀 수 없다
+        col_a, col_b = st.columns(2)
+        with col_a:
+            if st.button("풀 수 있다", key="can_solve"):
+                st.session_state.stage2_choice = 'can'
+                st.session_state.stage2_attempts = 0
+                safe_rerun()
+        with col_b:
+            if st.button("풀 수 없다", key="cannot_solve"):
+                st.session_state.stage2_choice = 'cannot'
+                safe_rerun()
 
     # 사용자가 '풀 수 있다'를 선택한 경우: 답 입력 허용
     if st.session_state.get('stage2_choice') == 'can':
@@ -413,6 +415,14 @@ elif st.session_state.stage == 2:
 
                     $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
                     """)
+                    # 정답을 맞춘 뒤 연습 문제 3개를 풀어볼 수 있도록 안내 버튼 제공
+                    if st.button("연습문제 3개 풀기", key="stage2_start_practice_from_single"):
+                        st.session_state.stage2_practice_problems = [generate_non_divisible_problem() for _ in range(3)]
+                        st.session_state.stage2_practice_index = 0
+                        st.session_state.stage2_practice_attempts = 0
+                        st.session_state.stage2_practice_solved_one = False
+                        st.session_state.stage2_choice = 'can'
+                        safe_rerun()
                 else:
                     st.error("❌ 틀렸어요. 다시 확인해보세요!")
                     st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
