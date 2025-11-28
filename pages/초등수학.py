@@ -153,8 +153,8 @@ if st.session_state.stage == 1:
             
             $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
             
-            **Step 2:** 나눗셈을 곱셈으로 바꿔요
-            
+            **Step 2:** 뒤집은 분수를 이용해 계산을 진행해요
+
             $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} = \\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
             
             **Step 3:** 분자끼리, 분모끼리 곱해요
@@ -165,7 +165,7 @@ if st.session_state.stage == 1:
             
             $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
             
-            💡 **중요:** 나눗셈을 곱셈으로 바꾸는 것이 분수 나눗셈의 비결이에요! ⭐
+            💡 **중요:** 분수를 차근차근 정리하고 약분하는 연습이 중요해요! ⭐
             """)
             
             if st.session_state.correct_count >= 3:
