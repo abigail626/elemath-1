@@ -165,6 +165,18 @@ if st.session_state.stage == 1:
         st.session_state.stage1_index = 0
         st.session_state.stage1_attempts = 0
 
+    # 문제 인덱스가 3(모두 풀음) 이상이면 바로 완료 UI를 보여주고
+    # 문제 리스트에 접근하지 않도록 처리합니다 (IndexError 방지).
+    if st.session_state.stage1_index >= 3:
+        st.info("🚀 3문제를 모두 맞췄어요! 다음 단계로 진행해보세요.")
+        if st.button("다음 단계로 이동 →"):
+            st.session_state.stage = 2
+            st.session_state.current_problem = None
+            st.rerun()
+        # 이후 코드가 문제에 접근하지 않도록 return으로 종료
+        # (한 번에 하나의 Streamlit 스크립트 실행 흐름이므로 안전하게 종료)
+        st.stop()
+
     problem_index = st.session_state.stage1_index
     problem = st.session_state.stage1_problems[problem_index]
 
