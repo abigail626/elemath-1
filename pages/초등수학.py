@@ -49,10 +49,10 @@ def generate_divisible_problem():
             continue
 
         numerator1 = random.choice(larger)
-
-        # 조건을 만족하면 결과 계산 후 반환
+        # 조건을 만족하면 결과 계산 후 '정수 결과'인지 확인
         result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
-        return {
+        if result.denominator == 1:
+            return {
             'numerator1': numerator1,
             'denominator1': denominator1,
             'numerator2': numerator2,
@@ -60,7 +60,9 @@ def generate_divisible_problem():
             'result': result,
             'result_num': result.numerator,
             'result_den': result.denominator
-        }
+            }
+        # 아니면 다른 조합을 찾아 재시도
+        continue
 
     # 실패 시(희박) 기존 방식으로 하나 생성(동일하거나 큰 경우 허용)
     denominator1 = random.randint(2, 12)
@@ -77,7 +79,19 @@ def generate_divisible_problem():
     else:
         candidates = [1,3,5,7,9]
     larger_or_equal = [c for c in candidates if c >= numerator2]
-    numerator1 = random.choice(larger_or_equal) if larger_or_equal else max(candidates)
+    # 가능한 후보 중에서 정수 결과를 만드는 값을 우선 선택
+    chosen = None
+    for cand in (larger_or_equal if larger_or_equal else candidates):
+        res = Fraction(cand, denominator1) / Fraction(numerator2, denominator2)
+        if res.denominator == 1:
+            chosen = cand
+            result = res
+            break
+    if chosen is None:
+        numerator1 = random.choice(larger_or_equal) if larger_or_equal else max(candidates)
+        result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
+    else:
+        numerator1 = chosen
     
     # 실제 나눗셈 결과 계산
     result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
