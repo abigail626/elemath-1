@@ -294,7 +294,7 @@ elif st.session_state.stage == 2:
             st.session_state.current_problem = None
             st.session_state.problem_history = []
             # clear stage2 state
-            for k in ['stage2_problem','stage2_choice','stage2_attempts']:
+            for k in ['stage2_problem','stage2_choice','stage2_attempts','stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_completed']:
                 if k in st.session_state:
                     del st.session_state[k]
             st.rerun()
@@ -308,7 +308,7 @@ elif st.session_state.stage == 2:
     problem = st.session_state.stage2_problem
 
     # 예시 문제 및 선택 버튼은 연습 모드가 활성화되어 있지 않을 때만 보여줍니다.
-    if 'stage2_practice_problems' not in st.session_state:
+    if not st.session_state.get('stage2_practice_mode', False):
         # 문제 표시
         st.write(f"### 예시 문제\n\n$$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$")
 
@@ -327,7 +327,7 @@ elif st.session_state.stage == 2:
     # 사용자가 '풀 수 있다'를 선택한 경우: 답 입력 허용
     if st.session_state.get('stage2_choice') == 'can':
         # 연습 문제가 초기화되어 있으면 연습 문제 모드로 동작
-        if 'stage2_practice_problems' in st.session_state:
+        if st.session_state.get('stage2_practice_mode', False) and 'stage2_practice_problems' in st.session_state:
             idx = st.session_state.stage2_practice_index
             practice = st.session_state.stage2_practice_problems[idx]
 
@@ -421,6 +421,7 @@ elif st.session_state.stage == 2:
                         st.session_state.stage2_practice_index = 0
                         st.session_state.stage2_practice_attempts = 0
                         st.session_state.stage2_practice_solved_one = False
+                        st.session_state.stage2_practice_mode = True
                         st.session_state.stage2_choice = 'can'
                         safe_rerun()
                 else:
@@ -428,7 +429,7 @@ elif st.session_state.stage == 2:
                     st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
 
     # 사용자가 '풀 수 없다'를 선택한 경우: 개념 설명과 풀이 제공
-    elif st.session_state.get('stage2_choice') == 'cannot':
+    elif st.session_state.get('stage2_choice') == 'cannot' and not st.session_state.get('stage2_practice_mode', False):
         st.write("### 왜 바로 나눌 수 없을까요?")
         st.write("분자나 분모가 더 작은 수에 더 큰 수를 나누는 경우, 단순한 정수 나눗셈으로 딱 떨어지지 않을 수 있어요.")
         st.write("이럴 때는 두 번째 분수의 역수를 이용해 곱셈으로 계산하면 정확히 풀 수 있어요. 아래에서 함께 계산해볼게요.")
@@ -461,6 +462,7 @@ elif st.session_state.stage == 2:
             st.session_state.stage2_practice_index = 0
             st.session_state.stage2_practice_attempts = 0
             st.session_state.stage2_practice_solved_one = False
+            st.session_state.stage2_practice_mode = True
             safe_rerun()
 
 # (학습 팁 섹션이 제거되었습니다)
