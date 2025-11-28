@@ -138,6 +138,28 @@ def check_answer(user_num, user_den, correct_num, correct_den):
     correct_fraction = Fraction(correct_num, correct_den)
     return user_fraction == correct_fraction
 
+
+def safe_rerun():
+    """Streamlit 버전 차이로 인해 `experimental_rerun`이 없을 때를 대비한 안전한 재실행 함수.
+    가능한 경우 `st.experimental_rerun()` 또는 `st.rerun()`을 호출하고, 둘 다 없으면
+    세션 상태 플래그를 토글하고 `st.stop()`으로 현재 실행을 중단합니다.
+    """
+    try:
+        if hasattr(st, "experimental_rerun"):
+            st.experimental_rerun()
+            return
+    except Exception:
+        pass
+    try:
+        if hasattr(st, "rerun"):
+            st.rerun()
+            return
+    except Exception:
+        pass
+    # 최후의 수단: 세션 플래그 토글 후 실행 중단 — UI의 다음 상호작용 때 스크립트가 재실행됩니다.
+    st.session_state["_rerun_flag"] = not st.session_state.get("_rerun_flag", False)
+    st.stop()
+
 # ========== 단계 1: 기초 단계 (나누어지는 분수) ==========
 if st.session_state.stage == 1:
     st.subheader("📚 단계 1: 나누어지는 분수로 배우기")
@@ -294,11 +316,11 @@ elif st.session_state.stage == 2:
         if st.button("풀 수 있다", key="can_solve"):
             st.session_state.stage2_choice = 'can'
             st.session_state.stage2_attempts = 0
-            st.experimental_rerun()
+            safe_rerun()
     with col_b:
         if st.button("풀 수 없다", key="cannot_solve"):
             st.session_state.stage2_choice = 'cannot'
-            st.experimental_rerun()
+            safe_rerun()
 
     # 사용자가 '풀 수 있다'를 선택한 경우: 답 입력 허용
     if st.session_state.get('stage2_choice') == 'can':
@@ -362,6 +384,6 @@ elif st.session_state.stage == 2:
         # 선택지: 이제 풀 수 있다로 전환해서 답 입력 가능하도록 안내
         if st.button("이제 풀 수 있다 (답 입력)", key="stage2_switch_to_can"):
             st.session_state.stage2_choice = 'can'
-            st.experimental_rerun()
+            safe_rerun()
 
 # (학습 팁 섹션이 제거되었습니다)
