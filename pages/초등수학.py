@@ -323,8 +323,20 @@ elif st.session_state.stage == 2:
                     del st.session_state[k]
             st.rerun()
 
-    # 초기 문제 준비
-    if 'stage2_problem' not in st.session_state:
+    # 연습이 모두 완료되었으면 연습 관련 상태를 정리하고 새 예시문제 생성
+    if st.session_state.get('stage2_completed', False):
+        for k in ['stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_completed']:
+            if k in st.session_state:
+                del st.session_state[k]
+        # 새로운 예시 문제 생성
+        st.session_state.stage2_problem = generate_non_divisible_problem()
+        st.session_state.stage2_choice = None
+        st.session_state.stage2_attempts = 0
+        # 재실행하여 UI가 갱신되도록 함
+        safe_rerun()
+
+    # 초기 문제 준비 (연습 모드일 때는 예시 문제를 생성하지 않음)
+    if ('stage2_problem' not in st.session_state) and (not st.session_state.get('stage2_practice_mode', False)) and ('stage2_practice_problems' not in st.session_state):
         st.session_state.stage2_problem = generate_non_divisible_problem()
         st.session_state.stage2_choice = None
         st.session_state.stage2_attempts = 0
@@ -444,6 +456,10 @@ elif st.session_state.stage == 2:
                     """)
                     # 정답을 맞춘 뒤 연습 문제 3개를 풀어볼 수 있도록 안내 버튼 제공
                     if st.button("연습문제 3개 풀기", key="stage2_start_practice_from_single"):
+                        # 예시 문제를 백업해두고 실제 예시는 화면에서 제거
+                        st.session_state.stage2_problem_backup = st.session_state.stage2_problem
+                        if 'stage2_problem' in st.session_state:
+                            del st.session_state['stage2_problem']
                         st.session_state.stage2_practice_problems = make_practice_problems(problem, 3)
                         st.session_state.stage2_practice_index = 0
                         st.session_state.stage2_practice_attempts = 0
@@ -484,7 +500,11 @@ elif st.session_state.stage == 2:
         # 선택지: 이제 풀 수 있다로 전환해서 답 입력 가능하도록 안내
         if st.button("이제 풀 수 있다 (답 입력)", key="stage2_switch_to_can"):
             st.session_state.stage2_choice = 'can'
-            # 연습 문제 3개를 추가로 생성하도록 초기화 (사용자가 '풀 수 없다'를 보고 '이제 풀 수 있다'를 선택했을 때)
+            # 예시 문제를 백업하고 화면에서 제거
+            st.session_state.stage2_problem_backup = st.session_state.stage2_problem
+            if 'stage2_problem' in st.session_state:
+                del st.session_state['stage2_problem']
+            # 연습 문제 3개를 추가로 생성하도록 초기화
             st.session_state.stage2_practice_problems = make_practice_problems(problem, 3)
             st.session_state.stage2_practice_index = 0
             st.session_state.stage2_practice_attempts = 0
