@@ -404,19 +404,36 @@ if st.session_state.stage == 1:
     if problem_index == 0:
         st.write("""
         ### 📚 개념 설명: 통분
-        
-        **통분이란?** 분모가 다른 분수들을 분모가 같은 분수로 만드는 것이에요!
-        
-        예를 들어:
-        - $\\frac{1}{2}$와 $\\frac{1}{3}$을 통분하면 → $\\frac{3}{6}$와 $\\frac{2}{6}$
-        - 공통 분모는 2와 3의 최소공배수인 6이에요!
-        
-        **분수의 나눗셈과 통분:**
-        
-        분모를 같게 만든 후에는 분자끼리만 나누면 돼요!
-        
-        예: $\\frac{3}{4} \\div \\frac{1}{4} = \\frac{3}{4} \\div \\frac{1}{4} = 3 \\div 1 = 3$ (분모가 같으면 분자끼리만 나눔)
         """)
+        
+        st.markdown("""
+        <div style='background-color: #bbdefb; padding: 20px; border-radius: 10px; border: 3px solid #2196f3;'>
+            <p style='font-size: 1.1em; margin-bottom: 15px;'>
+                <strong><span style='background-color: #42a5f5; color: white; padding: 3px 10px; border-radius: 5px;'>통분이란?</span></strong> 
+                분모가 다른 분수들을 분모가 같은 분수로 만드는 것이에요!
+            </p>
+            <p style='font-size: 1.05em; margin-bottom: 10px;'><strong>예를 들어:</strong></p>
+            <ul style='font-size: 1.05em;'>
+                <li>$\\frac{1}{2}$와 $\\frac{1}{3}$을 통분하면 → $\\frac{3}{6}$와 $\\frac{2}{6}$</li>
+                <li>공통 분모는 2와 3의 <span style='background-color: #90caf9; padding: 2px 6px; border-radius: 3px;'>최소공배수</span>인 6이에요!</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div style='background-color: #c5cae9; padding: 20px; border-radius: 10px; border: 3px solid #673ab7; margin-top: 15px;'>
+            <p style='font-size: 1.15em; margin-bottom: 10px;'>
+                <strong><span style='background-color: #7e57c2; color: white; padding: 5px 12px; border-radius: 5px;'>분수의 나눗셈과 통분</span></strong>
+            </p>
+            <p style='font-size: 1.05em; text-align: center;'>
+                <span style='background-color: #b39ddb; padding: 3px 10px; border-radius: 5px;'>분모를 같게 만든 후에는 분자끼리만 나누면 돼요!</span>
+            </p>
+            <p style='text-align: center; margin-top: 10px; font-size: 1.05em;'>
+                예: $\\frac{3}{4} \\div \\frac{1}{4} = 3 \\div 1 = 3$ (분모가 같으면 분자끼리만 나눔)
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         st.write("---")
     
     # 문제 출제
@@ -439,17 +456,26 @@ if st.session_state.stage == 1:
         new_num1 = problem['numerator1'] * mult1
         new_num2 = problem['numerator2'] * mult2
         
-        st.write(f"""
-        **통분을 이용해서 풀어보세요!**
+        st.markdown(f"""
+        <div style='background-color: #e1f5fe; padding: 15px; border-radius: 8px; border-left: 5px solid #0288d1;'>
+            <p><strong><span style='background-color: #4fc3f7; padding: 2px 8px; border-radius: 3px;'>통분</span>을 이용해서 풀어보세요!</strong></p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        분모를 같게 만들어요 (통분):
+        st.write(f"""
+        **분모를 같게 만들어요 (<span style='background-color: #81d4fa; padding: 2px 6px; border-radius: 3px;'>통분</span>):**
         
         $\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}}$ → $\\frac{{{new_num1}}}{{{common_denom}}}$
         
         $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$ → $\\frac{{{new_num2}}}{{{common_denom}}}$
         
-        이제 분모가 같으니 분자끼리만 나누면 돼요:
+        """)
         
+        st.markdown(f"""
+        <p><strong>이제 분모가 같으니 <span style='background-color: #b39ddb; padding: 2px 8px; border-radius: 3px;'>분자끼리만 나누면</span> 돼요:</strong></p>
+        """, unsafe_allow_html=True)
+        
+        st.write(f"""
         $\\frac{{{new_num1}}}{{{common_denom}}} \\div \\frac{{{new_num2}}}{{{common_denom}}} = {new_num1} \\div {new_num2}$
         
         정답을 맞춘 후에 풀이 과정을 배워볼 수 있어요! 🎯
@@ -480,19 +506,30 @@ if st.session_state.stage == 1:
             new_num2 = problem['numerator2'] * mult2
             
             with st.expander("📖 풀이 과정 보기"):
+                st.markdown(f"""
+                <p style='font-size: 1.1em; margin-bottom: 15px;'>
+                    <strong><span style='background-color: #4fc3f7; padding: 3px 10px; border-radius: 5px;'>통분</span>을 이용한 풀이:</strong>
+                </p>
+                """, unsafe_allow_html=True)
+                
+                st.markdown(f"""
+                <p><strong>1단계: <span style='background-color: #81d4fa; padding: 2px 8px; border-radius: 3px;'>통분하기</span></strong></p>
+                """, unsafe_allow_html=True)
+                
                 st.write(f"""
-                **통분을 이용한 풀이:**
-                
-                **1단계: 통분하기**
-                
-                분모 {problem['denominator1']}과 {problem['denominator2']}의 최소공배수는 {common_denom}이에요.
+                분모 {problem['denominator1']}과 {problem['denominator2']}의 <span style='background-color: #b39ddb; padding: 2px 6px; border-radius: 3px;'>최소공배수</span>는 {common_denom}이에요.
                 
                 $\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{mult1}}}{{{mult1}}} = \\frac{{{new_num1}}}{{{common_denom}}}$
                 
                 $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\times \\frac{{{mult2}}}{{{mult2}}} = \\frac{{{new_num2}}}{{{common_denom}}}$
                 
-                **2단계: 분모가 같으니 분자끼리 나누기**
+                """)
                 
+                st.markdown(f"""
+                <p><strong>2단계: 분모가 같으니 <span style='background-color: #ce93d8; padding: 2px 8px; border-radius: 3px;'>분자끼리 나누기</span></strong></p>
+                """, unsafe_allow_html=True)
+                
+                st.write(f"""
                 $\\frac{{{new_num1}}}{{{common_denom}}} \\div \\frac{{{new_num2}}}{{{common_denom}}} = {new_num1} \\div {new_num2} = {problem['result_num']}/{problem['result_den']}$
                 """)
             
@@ -539,19 +576,30 @@ if st.session_state.stage == 1:
                 new_num2 = problem['numerator2'] * mult2
                 
                 with st.expander("📖 풀이 과정 보기"):
+                    st.markdown(f"""
+                    <p style='font-size: 1.1em; margin-bottom: 15px;'>
+                        <strong><span style='background-color: #4fc3f7; padding: 3px 10px; border-radius: 5px;'>통분</span>을 이용한 풀이:</strong>
+                    </p>
+                    """, unsafe_allow_html=True)
+                    
+                    st.markdown(f"""
+                    <p><strong>1단계: <span style='background-color: #81d4fa; padding: 2px 8px; border-radius: 3px;'>통분하기</span></strong></p>
+                    """, unsafe_allow_html=True)
+                    
                     st.write(f"""
-                    **통분을 이용한 풀이:**
-                    
-                    **1단계: 통분하기**
-                    
-                    분모 {problem['denominator1']}과 {problem['denominator2']}의 최소공배수는 {common_denom}이에요.
+                    분모 {problem['denominator1']}과 {problem['denominator2']}의 <span style='background-color: #b39ddb; padding: 2px 6px; border-radius: 3px;'>최소공배수</span>는 {common_denom}이에요.
                     
                     $\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{mult1}}}{{{mult1}}} = \\frac{{{new_num1}}}{{{common_denom}}}$
                     
                     $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\times \\frac{{{mult2}}}{{{mult2}}} = \\frac{{{new_num2}}}{{{common_denom}}}$
                     
-                    **2단계: 분모가 같으니 분자끼리 나누기**
+                    """)
                     
+                    st.markdown(f"""
+                    <p><strong>2단계: 분모가 같으니 <span style='background-color: #ce93d8; padding: 2px 8px; border-radius: 3px;'>분자끼리 나누기</span></strong></p>
+                    """, unsafe_allow_html=True)
+                    
+                    st.write(f"""
                     $\\frac{{{new_num1}}}{{{common_denom}}} \\div \\frac{{{new_num2}}}{{{common_denom}}} = {new_num1} \\div {new_num2} = {problem['result_num']}/{problem['result_den']}$
                     """)
                 
