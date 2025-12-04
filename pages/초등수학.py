@@ -54,6 +54,10 @@ def generate_divisible_problem():
         # 나눗셈 결과가 정수인지 확인
         result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
         if result.denominator == 1 and result.numerator > 0:
+            # 두 분수의 분모가 서로 달라야 함
+            if denominator1 == denominator2:
+                continue
+            
             # 너무 단순한 패턴 제외 (예: 3/6 ÷ 1/6 같은 형태)
             # 두 분수의 분자가 같거나 분모가 같은 경우 제외
             if numerator1 == numerator2 or denominator1 == denominator2:
@@ -184,6 +188,10 @@ def generate_non_divisible_problem():
         
         # 분자와 분모가 같으면 스킵 (1/1, 2/2 방지)
         if numerator1 == denominator1 or numerator2 == denominator2:
+            continue
+        
+        # 두 분수의 분모가 서로 달라야 함
+        if denominator1 == denominator2:
             continue
         
         # 역수로 곱셈할 때 약분이 가능한지 확인
