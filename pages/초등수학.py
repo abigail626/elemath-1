@@ -372,6 +372,21 @@ elif st.session_state.stage == 2:
         # 연습 문제가 초기화되어 있으면 연습 문제 모드로 동작
         if st.session_state.get('stage2_practice_mode', False) and 'stage2_practice_problems' in st.session_state:
             idx = st.session_state.stage2_practice_index
+            
+            # 3문제를 모두 풀었는지 확인
+            if idx >= len(st.session_state.stage2_practice_problems):
+                st.info("🎉 연습문제 3개를 모두 완료했어요!")
+                if st.button("새로운 예시 문제로 돌아가기", key="stage2_back_to_example"):
+                    # 연습 모드 종료 및 상태 초기화
+                    for k in ['stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_problem_backup']:
+                        if k in st.session_state:
+                            del st.session_state[k]
+                    st.session_state.stage2_problem = generate_non_divisible_problem()
+                    st.session_state.stage2_choice = None
+                    st.session_state.stage2_attempts = 0
+                    safe_rerun()
+                st.stop()
+            
             practice = st.session_state.stage2_practice_problems[idx]
 
             st.info(f"연습 문제 {idx + 1} / {len(st.session_state.stage2_practice_problems)}")
@@ -388,7 +403,6 @@ elif st.session_state.stage == 2:
                     st.success("🎉 정답입니다!")
                     st.session_state.correct_count += 1
                     st.session_state.problem_history.append({'stage':2,'problem':practice,'correct':True})
-                    st.session_state.stage2_practice_solved_one = True
 
                     # 풀이과정 표시
                     st.write("### 📖 풀이과정")
@@ -406,30 +420,36 @@ elif st.session_state.stage == 2:
                     $$= \\frac{{{practice['result_num']}}}{{{practice['result_den']}}}$$
                     """)
 
-                    # 한 문제를 맞추면 '다음 페이지로 이동 →' 버튼으로 다음 연습문제(또는 완료)를 제어합니다.
-                    if st.session_state.stage2_practice_solved_one:
-                        st.success("한 문제를 맞추셨습니다.")
-                        if st.button("다음 페이지로 이동 →", key="stage2_finish"):
-                            # 아직 남은 연습 문제가 있으면 다음 연습문제로 이동
-                            if st.session_state.stage2_practice_index < len(st.session_state.stage2_practice_problems) - 1:
-                                st.session_state.stage2_practice_index += 1
-                                st.session_state.stage2_practice_attempts = 0
-                                st.session_state.stage2_practice_solved_one = False
-                                safe_rerun()
-                            else:
-                                # 모두 풀었으면 완료 플래그 설정
-                                st.session_state.stage2_completed = True
-                                safe_rerun()
+                    # 다음 문제로 이동
+                    st.session_state.stage2_practice_index += 1
+                    st.session_state.stage2_practice_attempts = 0
+
+                    if st.session_state.stage2_practice_index >= len(st.session_state.stage2_practice_problems):
+                        st.success("🎉 모든 연습문제를 완료했어요!")
+                        if st.button("완료", key="stage2_prac_complete"):
+                            # 연습 모드 종료
+                            for k in ['stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_problem_backup']:
+                                if k in st.session_state:
+                                    del st.session_state[k]
+                            st.session_state.stage2_problem = generate_non_divisible_problem()
+                            st.session_state.stage2_choice = None
+                            st.session_state.stage2_attempts = 0
+                            safe_rerun()
+                    else:
+                        st.write(f"다음 문제로 넘어갑니다: {st.session_state.stage2_practice_index + 1}번 문제")
+                        if st.button("다음 문제", key=f"stage2_prac_next_{idx}"):
+                            safe_rerun()
                 else:
                     st.session_state.stage2_practice_attempts += 1
                     attempts = st.session_state.stage2_practice_attempts
                     if attempts == 1:
-                        st.error("❌ 틀렸어요. 힌트를 확인하고 다시 시도해보세요!")
+                        st.error("❌ 틀렸어요. 다시 시도해보세요!")
+                        if st.button("다시 풀기", key=f"stage2_prac_retry_a_{idx}"):
+                            safe_rerun()
                     else:
                         st.error("❌ 또 틀렸어요. 아래에 정답을 참고하세요.")
                         st.write(f"정답: {practice['result_num']}/{practice['result_den']}")
-                        if st.button("다시 풀기", key=f"stage2_prac_retry_{idx}"):
-                            st.session_state.stage2_practice_attempts = 0
+                        if st.button("다시 풀기", key=f"stage2_prac_retry_b_{idx}"):
                             safe_rerun()
         else:
             # 기존 단일 문제 흐름 (연습 문제가 초기화되어 있지 않을 때)
