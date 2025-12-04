@@ -19,54 +19,55 @@ if 'problem_history' not in st.session_state:
 
 def generate_divisible_problem():
     """나누어지는 분수 문제 생성 (단계 1)"""
-    # 목표: 첫 번째 분수의 분자와 분모가 각각 두 번째 분수의 값보다 '크게' 생성되도록 함
-    # 여러번 시도해서 조건을 만족하는 조합을 찾음
-    for _ in range(100):
-        denominator1 = random.randint(2, 12)
-
-        # 두 번째 분수는 분모가 첫 번째 분모의 약수이되, 작도록(strictly smaller) 선택
-        divisors = [i for i in range(1, denominator1) if denominator1 % i == 0]
-        if not divisors:
-            continue
-        denominator2 = random.choice(divisors)
-
-        # denominator2의 홀짝에 맞는 numerator2 선택
-        if denominator2 % 2 == 0:
-            numerator2 = random.choice([2,4,6,8])
+    # 다양한 형태의 문제를 생성하기 위해 여러 전략 사용
+    for _ in range(500):
+        # 전략 1: 분모가 배수 관계인 경우
+        if random.random() < 0.5:
+            denominator2 = random.randint(2, 6)  # 작은 분모
+            multiplier = random.randint(2, 4)  # 배수
+            denominator1 = denominator2 * multiplier
         else:
-            numerator2 = random.choice([1,3,5,7,9])
-
-        # denominator1의 홀짝에 맞는 numerator1 후보들
-        if denominator1 % 2 == 0:
-            candidates = [2,4,6,8]
-        else:
-            candidates = [1,3,5,7,9]
-
-        # strictly greater 인 후보들
-        larger = [c for c in candidates if c > numerator2]
-        if not larger:
-            # 조건을 만족하는 분자가 없으면 다른 분모로 재시도
-            continue
-
-        numerator1 = random.choice(larger)
+            # 전략 2: 더 큰 범위에서 약수 관계 찾기
+            denominator1 = random.choice([4, 6, 8, 9, 10, 12, 15, 16, 18, 20])
+            divisors = [i for i in range(2, denominator1) if denominator1 % i == 0]
+            if not divisors:
+                continue
+            denominator2 = random.choice(divisors)
         
-        # 각 분수가 기약분수인지 확인 (분자≠분모, gcd=1)
-        if numerator1 == denominator1 or gcd(numerator1, denominator1) != 1:
-            continue
-        if numerator2 == denominator2 or gcd(numerator2, denominator2) != 1:
+        # 분자는 더 다양한 범위에서 선택 (1~11)
+        numerator1 = random.randint(1, 11)
+        numerator2 = random.randint(1, 11)
+        
+        # 각 분수를 기약분수로 만들기
+        gcd1 = gcd(numerator1, denominator1)
+        numerator1 //= gcd1
+        denominator1 //= gcd1
+        
+        gcd2 = gcd(numerator2, denominator2)
+        numerator2 //= gcd2
+        denominator2 //= gcd2
+        
+        # 분자와 분모가 같으면 스킵 (1/1, 2/2 방지)
+        if numerator1 == denominator1 or numerator2 == denominator2:
             continue
         
-        # 조건을 만족하면 결과 계산 후 '정수 결과'인지 확인
+        # 나눗셈 결과가 정수인지 확인
         result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
-        if result.denominator == 1:
+        if result.denominator == 1 and result.numerator > 0:
+            # 너무 단순한 패턴 제외 (예: 3/6 ÷ 1/6 같은 형태)
+            # 두 분수의 분자가 같거나 분모가 같은 경우 제외
+            if numerator1 == numerator2 or denominator1 == denominator2:
+                if random.random() < 0.7:  # 70% 확률로 스킵
+                    continue
+            
             return {
-            'numerator1': numerator1,
-            'denominator1': denominator1,
-            'numerator2': numerator2,
-            'denominator2': denominator2,
-            'result': result,
-            'result_num': result.numerator,
-            'result_den': result.denominator
+                'numerator1': numerator1,
+                'denominator1': denominator1,
+                'numerator2': numerator2,
+                'denominator2': denominator2,
+                'result': result,
+                'result_num': result.numerator,
+                'result_den': result.denominator
             }
         # 아니면 다른 조합을 찾아 재시도
         continue
