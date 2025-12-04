@@ -463,10 +463,11 @@ elif st.session_state.stage == 2:
                     # 정답을 맞춘 뒤 연습 문제 3개를 풀어볼 수 있도록 안내 버튼 제공
                     if st.button("연습문제 3개 풀기", key="stage2_start_practice_from_single"):
                         # 예시 문제를 백업해두고 실제 예시는 화면에서 제거
-                        st.session_state.stage2_problem_backup = st.session_state.stage2_problem
+                        st.session_state.stage2_problem_backup = problem
                         if 'stage2_problem' in st.session_state:
                             del st.session_state['stage2_problem']
-                        st.session_state.stage2_practice_problems = make_practice_problems(problem, 3)
+                        # 연습문제는 항상 백업된 문제 기준으로 새로 생성
+                        st.session_state.stage2_practice_problems = make_practice_problems(st.session_state.stage2_problem_backup, 3)
                         st.session_state.stage2_practice_index = 0
                         st.session_state.stage2_practice_attempts = 0
                         st.session_state.stage2_practice_solved_one = False
@@ -507,11 +508,11 @@ elif st.session_state.stage == 2:
         if st.button("이제 풀 수 있다 (답 입력)", key="stage2_switch_to_can"):
             st.session_state.stage2_choice = 'can'
             # 예시 문제를 백업하고 화면에서 제거
-            st.session_state.stage2_problem_backup = st.session_state.stage2_problem
+            st.session_state.stage2_problem_backup = problem
             if 'stage2_problem' in st.session_state:
                 del st.session_state['stage2_problem']
-            # 연습 문제 3개를 추가로 생성하도록 초기화
-            st.session_state.stage2_practice_problems = make_practice_problems(problem, 3)
+            # 연습 문제 3개를 항상 새로 생성 (백업된 문제 기준)
+            st.session_state.stage2_practice_problems = make_practice_problems(st.session_state.stage2_problem_backup, 3)
             st.session_state.stage2_practice_index = 0
             st.session_state.stage2_practice_attempts = 0
             st.session_state.stage2_practice_solved_one = False
