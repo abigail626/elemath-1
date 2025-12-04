@@ -107,18 +107,81 @@ def generate_divisible_problem():
     }
 
 def generate_non_divisible_problem():
-    """나누어지지 않는 분수 문제 생성 (단계 2)"""
-    numerator1 = random.randint(1, 9)
+    """나누어지지 않는 분수 문제 생성 (단계 2)
+    역수로 곱셈할 때 약분이 가능하도록 생성합니다.
+    예: 3/4 ÷ 2/6 = 3/4 × 6/2 → 3과 6이 약분, 4와 2가 약분
+    """
+    # 약분 가능한 문제를 만들기 위한 전략:
+    # numerator1과 denominator2가 공약수를 가지거나
+    # denominator1과 numerator2가 공약수를 가지도록 생성
+    
+    attempts = 0
+    while attempts < 100:
+        attempts += 1
+        
+        # 공약수를 만들기 위한 기본 수 선택
+        common_factor1 = random.randint(2, 6)  # 첫 번째 공약수
+        common_factor2 = random.randint(2, 6)  # 두 번째 공약수
+        
+        # numerator1과 denominator2가 common_factor1을 공약수로 가지도록
+        numerator1 = common_factor1 * random.randint(1, 3)
+        denominator2_temp = common_factor1 * random.randint(1, 3)
+        
+        # denominator1과 numerator2가 common_factor2를 공약수로 가지도록
+        denominator1 = common_factor2 * random.randint(1, 4)
+        numerator2 = common_factor2 * random.randint(1, 3)
+        
+        # denominator2는 위에서 만든 값 사용
+        denominator2 = denominator2_temp
+        
+        # 값 범위 확인 (1~12 사이)
+        if not (1 <= numerator1 <= 12 and 2 <= denominator1 <= 12 and 
+                1 <= numerator2 <= 12 and 2 <= denominator2 <= 12):
+            continue
+        
+        # 나누어 떨어지지 않는 경우인지 확인
+        if numerator1 * denominator2 % (denominator1 * numerator2) == 0:
+            continue
+        
+        # 기약분수로 만들기 (문제 자체는 기약분수여야 깔끔함)
+        gcd1 = gcd(numerator1, denominator1)
+        numerator1 //= gcd1
+        denominator1 //= gcd1
+        
+        gcd2 = gcd(numerator2, denominator2)
+        numerator2 //= gcd2
+        denominator2 //= gcd2
+        
+        # 역수로 곱셈할 때 약분이 가능한지 확인
+        # numerator1과 numerator2(역수의 분모)의 최대공약수
+        gcd_cross1 = gcd(numerator1, numerator2)
+        # denominator1과 denominator2(역수의 분자)의 최대공약수
+        gcd_cross2 = gcd(denominator1, denominator2)
+        
+        # 최소한 하나는 약분 가능해야 함
+        if gcd_cross1 > 1 or gcd_cross2 > 1:
+            result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
+            return {
+                'numerator1': numerator1,
+                'denominator1': denominator1,
+                'numerator2': numerator2,
+                'denominator2': denominator2,
+                'result': result,
+                'result_num': result.numerator,
+                'result_den': result.denominator
+            }
+    
+    # 100번 시도해도 실패하면 기본 방식으로 생성 (약분 가능 보장 안됨)
+    numerator1 = random.randint(2, 9)
     denominator1 = random.randint(2, 12)
-    numerator2 = random.randint(1, 9)
+    numerator2 = random.randint(2, 9)
     denominator2 = random.randint(2, 12)
     
     # 나누어 떨어지지 않는 경우를 확보
     while numerator1 * denominator2 % (denominator1 * numerator2) == 0:
-        numerator2 = random.randint(1, 9)
+        numerator2 = random.randint(2, 9)
         denominator2 = random.randint(2, 12)
     
-    # 실제 나눗셈 결과 계산
     result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
     
     return {
