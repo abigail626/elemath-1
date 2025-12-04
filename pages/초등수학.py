@@ -256,29 +256,38 @@ def generate_non_divisible_problem():
 
 def make_practice_problems(example_problem, n=3):
     """예시 문제와 중복되지 않고 서로 다른 연습문제 n개 생성.
-    무한 루프 방지를 위해 시도 횟수를 제한합니다.
+    다양성을 위해 결과값이 서로 다르도록 노력합니다.
     """
     problems = []
     seen = set()
+    result_values = set()
+    
     # 예시 문제를 seen에 추가
     ex_key = (example_problem['numerator1'], example_problem['denominator1'], 
               example_problem['numerator2'], example_problem['denominator2'])
     seen.add(ex_key)
+    result_values.add((example_problem['result_num'], example_problem['result_den']))
     
     attempts = 0
-    max_attempts = 5000  # 충분한 시도 횟수
+    max_attempts = 5000
     
     while len(problems) < n and attempts < max_attempts:
         p = generate_non_divisible_problem()
         key = (p['numerator1'], p['denominator1'], p['numerator2'], p['denominator2'])
+        result_key = (p['result_num'], p['result_den'])
         attempts += 1
         
         # 이미 본 문제면 스킵
         if key in seen:
             continue
+        
+        # 결과가 너무 비슷한 문제는 70% 확률로 스킵 (다양성 추구)
+        if result_key in result_values and random.random() < 0.7:
+            continue
             
         # 새로운 문제 추가
         seen.add(key)
+        result_values.add(result_key)
         problems.append(p)
     
     return problems
@@ -580,17 +589,19 @@ elif st.session_state.stage == 2:
     # 3문제를 모두 풀었는지 확인
     if st.session_state.stage2_index >= 3:
         st.balloons()
-        st.success("🎉🎉🎉 단계 2를 완료했어요! 분수의 나눗셈을 완벽하게 마스터했어요!")
+        st.success("🎉🎉🎉 축하합니다! 분수의 나눗셈 학습을 완료했어요!")
         st.write(f"""
-        ### 축하합니다! 🏆
+        ### 🏆 학습 완료!
         
         총 **{st.session_state.correct_count}문제**를 맞추셨어요!
         
-        - 단계 1: 나누어지는 분수 ✅
-        - 단계 2: 나누어지지 않는 분수 ✅
+        ✅ 단계 1: 나누어지는 분수로 기초 다지기
+        ✅ 단계 2: 역수를 이용한 분수의 나눗셈 완벽 마스터
         
         분수의 나눗셈을 모두 정복하셨어요! 👏
         """)
+        
+        st.info("더 많은 문제를 연습하고 싶다면 아래 버튼을 클릭하세요!")
         
         col_a, col_b = st.columns(2)
         with col_a:
@@ -604,7 +615,7 @@ elif st.session_state.stage == 2:
                         del st.session_state[k]
                 st.rerun()
         with col_b:
-            if st.button("➕ 더 연습하기", key="stage2_more_practice"):
+            if st.button("➕ 추가 연습하기", key="stage2_more_practice"):
                 # 새로운 문제 세트 생성
                 example = generate_non_divisible_problem()
                 st.session_state.stage2_example = example
