@@ -58,12 +58,6 @@ def generate_divisible_problem():
             if denominator1 == denominator2:
                 continue
             
-            # 너무 단순한 패턴 제외 (예: 3/6 ÷ 1/6 같은 형태)
-            # 두 분수의 분자가 같거나 분모가 같은 경우 제외
-            if numerator1 == numerator2 or denominator1 == denominator2:
-                if random.random() < 0.7:  # 70% 확률로 스킵
-                    continue
-            
             return {
                 'numerator1': numerator1,
                 'denominator1': denominator1,
@@ -192,7 +186,7 @@ def generate_non_divisible_problem():
         if numerator1 == denominator1 or numerator2 == denominator2:
             continue
         
-        # 두 분수의 분모가 서로 달라야 함
+        # 두 분수의 분모가 서로 달라야 함 (기약분수 후에 확인)
         if denominator1 == denominator2:
             continue
         
