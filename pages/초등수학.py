@@ -469,6 +469,33 @@ if st.session_state.stage == 1:
         if check_answer(user_numerator, user_denominator, 
                        problem['result_num'], problem['result_den']):
             st.success("🎉 정답입니다!")
+            
+            # 통분을 이용한 풀이 과정 표시
+            from math import lcm
+            common_denom = lcm(problem['denominator1'], problem['denominator2'])
+            mult1 = common_denom // problem['denominator1']
+            mult2 = common_denom // problem['denominator2']
+            
+            new_num1 = problem['numerator1'] * mult1
+            new_num2 = problem['numerator2'] * mult2
+            
+            with st.expander("📖 풀이 과정 보기"):
+                st.write(f"""
+                **통분을 이용한 풀이:**
+                
+                **1단계: 통분하기**
+                
+                분모 {problem['denominator1']}과 {problem['denominator2']}의 최소공배수는 {common_denom}이에요.
+                
+                $\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{mult1}}}{{{mult1}}} = \\frac{{{new_num1}}}{{{common_denom}}}$
+                
+                $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\times \\frac{{{mult2}}}{{{mult2}}} = \\frac{{{new_num2}}}{{{common_denom}}}$
+                
+                **2단계: 분모가 같으니 분자끼리 나누기**
+                
+                $\\frac{{{new_num1}}}{{{common_denom}}} \\div \\frac{{{new_num2}}}{{{common_denom}}} = {new_num1} \\div {new_num2} = {problem['result_num']}/{problem['result_den']}$
+                """)
+            
             st.session_state.correct_count += 1
             st.session_state.problem_history.append({
                 'stage': 1,
@@ -501,7 +528,34 @@ if st.session_state.stage == 1:
                     st.rerun()
             else:
                 st.error("❌ 또 틀렸어요. 아래에 정답을 참고하세요.")
-                st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
+                
+                # 통분을 이용한 풀이 과정 표시
+                from math import lcm
+                common_denom = lcm(problem['denominator1'], problem['denominator2'])
+                mult1 = common_denom // problem['denominator1']
+                mult2 = common_denom // problem['denominator2']
+                
+                new_num1 = problem['numerator1'] * mult1
+                new_num2 = problem['numerator2'] * mult2
+                
+                with st.expander("📖 풀이 과정 보기"):
+                    st.write(f"""
+                    **통분을 이용한 풀이:**
+                    
+                    **1단계: 통분하기**
+                    
+                    분모 {problem['denominator1']}과 {problem['denominator2']}의 최소공배수는 {common_denom}이에요.
+                    
+                    $\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{mult1}}}{{{mult1}}} = \\frac{{{new_num1}}}{{{common_denom}}}$
+                    
+                    $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\times \\frac{{{mult2}}}{{{mult2}}} = \\frac{{{new_num2}}}{{{common_denom}}}$
+                    
+                    **2단계: 분모가 같으니 분자끼리 나누기**
+                    
+                    $\\frac{{{new_num1}}}{{{common_denom}}} \\div \\frac{{{new_num2}}}{{{common_denom}}} = {new_num1} \\div {new_num2} = {problem['result_num']}/{problem['result_den']}$
+                    """)
+                
+                st.write(f"**정답: {problem['result_num']}/{problem['result_den']}**")
                 if st.button("다시 풀기", key="retry_stage1_b"):
                     st.rerun()
 
