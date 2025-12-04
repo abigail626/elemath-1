@@ -71,51 +71,58 @@ def generate_divisible_problem():
         # 아니면 다른 조합을 찾아 재시도
         continue
 
-    # 실패 시(희박) 기존 방식으로 하나 생성(동일하거나 큰 경우 허용)
-    denominator1 = random.randint(2, 12)
-    divisors = [i for i in range(1, denominator1 + 1) if denominator1 % i == 0]
-    if len(divisors) > 1:
-        divisors.remove(denominator1)
-    denominator2 = random.choice(divisors)
-    if denominator2 % 2 == 0:
-        numerator2 = random.choice([2,4,6,8])
-    else:
-        numerator2 = random.choice([1,3,5,7,9])
-    if denominator1 % 2 == 0:
-        candidates = [2,4,6,8]
-    else:
-        candidates = [1,3,5,7,9]
-    larger_or_equal = [c for c in candidates if c >= numerator2]
-    # 가능한 후보 중에서 정수 결과를 만드는 값을 우선 선택
-    chosen = None
-    for cand in (larger_or_equal if larger_or_equal else candidates):
-        res = Fraction(cand, denominator1) / Fraction(numerator2, denominator2)
-        if res.denominator == 1:
-            chosen = cand
-            result = res
-            break
-    if chosen is None:
-        numerator1 = random.choice(larger_or_equal) if larger_or_equal else max(candidates)
-        result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
-    else:
-        numerator1 = chosen
+    # 실패 시(희박) 백업 방식으로 생성 - 정수 결과를 보장해야 함
+    for _ in range(1000):
+        denominator1 = random.randint(2, 12)
+        divisors = [i for i in range(1, denominator1 + 1) if denominator1 % i == 0]
+        if len(divisors) > 1:
+            divisors.remove(denominator1)
+        denominator2 = random.choice(divisors)
+        
+        if denominator2 % 2 == 0:
+            numerator2 = random.choice([2,4,6,8])
+        else:
+            numerator2 = random.choice([1,3,5,7,9])
+        
+        if denominator1 % 2 == 0:
+            candidates = [2,4,6,8]
+        else:
+            candidates = [1,3,5,7,9]
+        
+        # 정수 결과를 만드는 numerator1 찾기
+        for numerator1 in candidates:
+            # 각 분수를 기약분수로 만들기
+            gcd1 = gcd(numerator1, denominator1)
+            n1 = numerator1 // gcd1
+            d1 = denominator1 // gcd1
+            
+            gcd2 = gcd(numerator2, denominator2)
+            n2 = numerator2 // gcd2
+            d2 = denominator2 // gcd2
+            
+            # 분자와 분모가 같으면 스킵 (1/1, 2/2 방지)
+            if n1 == d1 or n2 == d2:
+                continue
+            
+            # 나눗셈 결과가 정수인지 확인
+            result = Fraction(n1, d1) / Fraction(n2, d2)
+            if result.denominator == 1:
+                # 정수 결과를 찾았으면 반환
+                return {
+                    'numerator1': n1,
+                    'denominator1': d1,
+                    'numerator2': n2,
+                    'denominator2': d2,
+                    'result': result,
+                    'result_num': result.numerator,
+                    'result_den': result.denominator
+                }
     
-    # 각 분수를 기약분수로 만들기
-    gcd1 = gcd(numerator1, denominator1)
-    numerator1 //= gcd1
-    denominator1 //= gcd1
-    
-    gcd2 = gcd(numerator2, denominator2)
-    numerator2 //= gcd2
-    denominator2 //= gcd2
-    
-    # 분자와 분모가 같으면 다시 조정 (1/1, 2/2 방지)
-    if numerator1 == denominator1:
-        numerator1 = numerator1 * 2 if numerator1 < 6 else numerator1 - 1
-    if numerator2 == denominator2:
-        numerator2 = numerator2 * 2 if numerator2 < 6 else numerator2 - 1
-    
-    # 실제 나눗셈 결과 계산
+    # 최후의 수단: 간단한 예시 (4/6 ÷ 2/3 = 1)
+    numerator1 = 4
+    denominator1 = 6
+    numerator2 = 2
+    denominator2 = 3
     result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
     
     return {
