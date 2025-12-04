@@ -413,10 +413,16 @@ if st.session_state.stage == 1:
                 분모가 다른 분수들을 분모가 같은 분수로 만드는 것이에요!
             </p>
             <p style='font-size: 1.05em; margin-bottom: 10px;'><strong>예를 들어:</strong></p>
-            <ul style='font-size: 1.05em;'>
-                <li>$\\frac{1}{2}$와 $\\frac{1}{3}$을 통분하면 → $\\frac{3}{6}$와 $\\frac{2}{6}$</li>
-                <li>공통 분모는 2와 3의 <span style='background-color: #90caf9; padding: 2px 6px; border-radius: 3px;'>최소공배수</span>인 6이에요!</li>
-            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.write("""
+        - $\\frac{1}{2}$와 $\\frac{1}{3}$을 통분하면 → $\\frac{3}{6}$와 $\\frac{2}{6}$
+        """)
+        
+        st.markdown("""
+        <div style='background-color: #bbdefb; padding: 15px 20px; border-radius: 10px; border: 3px solid #2196f3; margin-top: -10px;'>
+            <p style='font-size: 1.05em; margin: 0;'>공통 분모는 2와 3의 <span style='background-color: #90caf9; padding: 2px 6px; border-radius: 3px;'>최소공배수</span>인 6이에요!</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -425,14 +431,15 @@ if st.session_state.stage == 1:
             <p style='font-size: 1.15em; margin-bottom: 10px;'>
                 <strong><span style='background-color: #7e57c2; color: white; padding: 5px 12px; border-radius: 5px;'>분수의 나눗셈과 통분</span></strong>
             </p>
-            <p style='font-size: 1.05em; text-align: center;'>
+            <p style='font-size: 1.05em; text-align: center; margin: 0;'>
                 <span style='background-color: #b39ddb; padding: 3px 10px; border-radius: 5px;'>분모를 같게 만든 후에는 분자끼리만 나누면 돼요!</span>
-            </p>
-            <p style='text-align: center; margin-top: 10px; font-size: 1.05em;'>
-                예: $\\frac{3}{4} \\div \\frac{1}{4} = 3 \\div 1 = 3$ (분모가 같으면 분자끼리만 나눔)
             </p>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.write("""
+        예: $\\frac{3}{4} \\div \\frac{1}{4} = 3 \\div 1 = 3$ (분모가 같으면 분자끼리만 나눔)
+        """)
         
         st.write("---")
     
