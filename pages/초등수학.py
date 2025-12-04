@@ -310,239 +310,244 @@ if st.session_state.stage == 1:
 # ========== 단계 2: 심화 단계 (나누어지지 않는 분수) ==========
 elif st.session_state.stage == 2:
     st.subheader("🚀 단계 2: 더 어려운 분수로 배우기")
-
-    # 안내 및 초기 상태
-    st.write("**분수의 나눗셈 - 심화 단계**\n\n이제는 분모끼리 나누어 떨어지지 않는 분수를 다뤄볼게요. 먼저 문제를 보고 '풀 수 있다' 또는 '풀 수 없다'를 골라보세요.")
-
+    
     col1, col2 = st.columns(2)
     with col1:
-        st.info(f"✅ 1단계 맞힘: {st.session_state.correct_count} 문제")
+        st.info(f"✅ 총 맞춘 문제: {st.session_state.correct_count}개")
     with col2:
         if st.button("🔄 처음부터 다시 시작", key="stage2_restart"):
             st.session_state.stage = 1
             st.session_state.correct_count = 0
             st.session_state.current_problem = None
             st.session_state.problem_history = []
-            # clear stage2 state
-            for k in ['stage2_problem','stage2_choice','stage2_attempts','stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_completed']:
-                if k in st.session_state:
+            for k in list(st.session_state.keys()):
+                if k.startswith('stage2_'):
                     del st.session_state[k]
             st.rerun()
-
-    # 연습이 모두 완료되었으면 연습 관련 상태를 정리하고 새 예시문제 생성
-    if st.session_state.get('stage2_completed', False):
-        for k in ['stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_completed']:
-            if k in st.session_state:
-                del st.session_state[k]
-        # 새로운 예시 문제 생성
-        st.session_state.stage2_problem = generate_non_divisible_problem()
-        st.session_state.stage2_choice = None
+    
+    # 개념 이해 여부 확인
+    if 'stage2_concept_understood' not in st.session_state:
+        st.session_state.stage2_concept_understood = False
+    
+    # 개념 설명 단계
+    if not st.session_state.stage2_concept_understood:
+        st.write("""
+        **분수의 나눗셈 - 심화 단계**
+        
+        이제는 **분모끼리 나누어 떨어지지 않는** 분수의 나눗셈을 배워볼 거예요!
+        """)
+        
+        # 예시 문제 생성 (한 번만)
+        if 'stage2_example' not in st.session_state:
+            st.session_state.stage2_example = generate_non_divisible_problem()
+        
+        example = st.session_state.stage2_example
+        
+        st.write(f"""
+        ### 📚 개념 설명: 역수를 이용한 분수의 나눗셈
+        
+        **예시 문제를 함께 풀어볼게요!**
+        
+        $$\\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\div \\frac{{{example['numerator2']}}}{{{example['denominator2']}}}$$
+        
+        분모끼리 나누어떨어지지 않아서 단계 1 방법으로는 풀기 어려워요.
+        하지만 **역수**를 이용하면 쉽게 풀 수 있어요! 🎯
+        """)
+        
+        st.write("---")
+        
+        st.write("""
+        ### 🔑 핵심 개념: 역수
+        
+        **역수란?** 분자와 분모를 뒤집은 분수예요.
+        
+        - $\\frac{3}{4}$의 역수 → $\\frac{4}{3}$
+        - $\\frac{2}{5}$의 역수 → $\\frac{5}{2}$
+        
+        **분수의 나눗셈 = 역수의 곱셈** ✨
+        
+        분수를 나누는 것은 역수를 곱하는 것과 같아요!
+        """)
+        
+        st.write("---")
+        
+        st.write(f"""
+        ### 📖 풀이 과정
+        
+        $$\\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\div \\frac{{{example['numerator2']}}}{{{example['denominator2']}}}$$
+        
+        **Step 1:** 두 번째 분수의 역수를 구해요
+        
+        $$\\frac{{{example['numerator2']}}}{{{example['denominator2']}}} \\text{{의 역수}} = \\frac{{{example['denominator2']}}}{{{example['numerator2']}}}$$
+        
+        **Step 2:** 나눗셈을 역수의 곱셈으로 바꿔요
+        
+        $$\\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\div \\frac{{{example['numerator2']}}}{{{example['denominator2']}}} = \\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\times \\frac{{{example['denominator2']}}}{{{example['numerator2']}}}$$
+        
+        **Step 3:** 분자끼리, 분모끼리 곱해요
+        
+        $$= \\frac{{{example['numerator1']} \\times {example['denominator2']}}}{{{example['denominator1']} \\times {example['numerator2']}}} = \\frac{{{example['numerator1'] * example['denominator2']}}}{{{example['denominator1'] * example['numerator2']}}}$$
+        
+        **Step 4:** 약분하면 최종 답!
+        
+        $$= \\frac{{{example['result_num']}}}{{{example['result_den']}}}$$
+        """)
+        
+        st.write("---")
+        
+        st.success("""
+        ✨ **정리**
+        
+        분수의 나눗셈 = 두 번째 분수를 뒤집어서 곱하기!
+        
+        $\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$
+        """)
+        
+        st.write("")
+        if st.button("✅ 이해했어요! 연습문제 풀러 가기 →", key="understand_concept"):
+            st.session_state.stage2_concept_understood = True
+            st.rerun()
+        
+        st.stop()
+    
+    # 연습문제 단계
+    st.write("""
+    **분수의 나눗셈 - 연습문제**
+    
+    역수를 이용하면 어떤 분수든 나눌 수 있어요! 💪
+    이제 3문제를 풀어보세요!
+    """)
+    
+    # 2단계에서는 연속 3문제를 풀도록 구성
+    if 'stage2_problems' not in st.session_state or len(st.session_state.get('stage2_problems', [])) < 3:
+        # 예시 문제와 중복되지 않는 3개의 연습 문제 생성
+        example = st.session_state.get('stage2_example', generate_non_divisible_problem())
+        st.session_state.stage2_problems = make_practice_problems(example, 3)
+        st.session_state.stage2_index = 0
         st.session_state.stage2_attempts = 0
-        # 재실행하여 UI가 갱신되도록 함
-        safe_rerun()
-
-    # 초기 문제 준비 (연습 모드일 때는 예시 문제를 생성하지 않음)
-    if ('stage2_problem' not in st.session_state) and (not st.session_state.get('stage2_practice_mode', False)) and ('stage2_practice_problems' not in st.session_state):
-        st.session_state.stage2_problem = generate_non_divisible_problem()
-        st.session_state.stage2_choice = None
-        st.session_state.stage2_attempts = 0
-
-    # 안전하게 세션 상태에서 문제를 가져옵니다. 키가 없으면 새 문제를 생성하여 초기화합니다.
-    problem = st.session_state.get('stage2_problem')
-    if problem is None:
-        st.session_state.stage2_problem = generate_non_divisible_problem()
-        st.session_state.stage2_choice = None
-        st.session_state.stage2_attempts = 0
-        problem = st.session_state.stage2_problem
-
-    # 예시 문제 및 선택 버튼은 연습 모드가 활성화되어 있지 않을 때만 보여줍니다.
-    # (플래그 또는 연습문제 리스트가 있으면 예시를 숨김)
-    if not (st.session_state.get('stage2_practice_mode', False) or 'stage2_practice_problems' in st.session_state):
-        # 문제 표시
-        st.write(f"### 예시 문제\n\n$$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$")
-
-        # 선택: 풀 수 있다 / 풀 수 없다
+    
+    # 3문제를 모두 풀었는지 확인
+    if st.session_state.stage2_index >= 3:
+        st.balloons()
+        st.success("🎉🎉🎉 단계 2를 완료했어요! 분수의 나눗셈을 완벽하게 마스터했어요!")
+        st.write(f"""
+        ### 축하합니다! 🏆
+        
+        총 **{st.session_state.correct_count}문제**를 맞추셨어요!
+        
+        - 단계 1: 나누어지는 분수 ✅
+        - 단계 2: 나누어지지 않는 분수 ✅
+        
+        분수의 나눗셈을 모두 정복하셨어요! 👏
+        """)
+        
         col_a, col_b = st.columns(2)
         with col_a:
-            if st.button("풀 수 있다", key="can_solve"):
-                st.session_state.stage2_choice = 'can'
-                st.session_state.stage2_attempts = 0
-                safe_rerun()
+            if st.button("🔄 처음부터 다시 하기", key="stage2_restart_all"):
+                st.session_state.stage = 1
+                st.session_state.correct_count = 0
+                st.session_state.current_problem = None
+                st.session_state.problem_history = []
+                for k in list(st.session_state.keys()):
+                    if k.startswith('stage1_') or k.startswith('stage2_'):
+                        del st.session_state[k]
+                st.rerun()
         with col_b:
-            if st.button("풀 수 없다", key="cannot_solve"):
-                st.session_state.stage2_choice = 'cannot'
-                safe_rerun()
-
-    # 사용자가 '풀 수 있다'를 선택한 경우: 답 입력 허용
-    if st.session_state.get('stage2_choice') == 'can':
-        # 연습 문제가 초기화되어 있으면 연습 문제 모드로 동작
-        if st.session_state.get('stage2_practice_mode', False) and 'stage2_practice_problems' in st.session_state:
-            idx = st.session_state.stage2_practice_index
-            
-            # 3문제를 모두 풀었는지 확인
-            if idx >= len(st.session_state.stage2_practice_problems):
-                st.info("🎉 연습문제 3개를 모두 완료했어요!")
-                if st.button("새로운 예시 문제로 돌아가기", key="stage2_back_to_example"):
-                    # 연습 모드 종료 및 상태 초기화
-                    for k in ['stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_problem_backup']:
-                        if k in st.session_state:
-                            del st.session_state[k]
-                    st.session_state.stage2_problem = generate_non_divisible_problem()
-                    st.session_state.stage2_choice = None
-                    st.session_state.stage2_attempts = 0
-                    safe_rerun()
-                st.stop()
-            
-            practice = st.session_state.stage2_practice_problems[idx]
-
-            st.info(f"연습 문제 {idx + 1} / {len(st.session_state.stage2_practice_problems)}")
-            st.write(f"### 문제\n\n$$\\frac{{{practice['numerator1']}}}{{{practice['denominator1']}}} \\div \\frac{{{practice['numerator2']}}}{{{practice['denominator2']}}}$$")
-
-            c1, c2 = st.columns(2)
-            with c1:
-                user_n = st.number_input("분자", min_value=1, value=1, key=f"stage2_prac_num_{idx}")
-            with c2:
-                user_d = st.number_input("분모", min_value=1, value=1, key=f"stage2_prac_den_{idx}")
-
-            if st.button("✓ 답 제출", key=f"stage2_prac_submit_{idx}"):
-                if check_answer(user_n, user_d, practice['result_num'], practice['result_den']):
-                    st.success("🎉 정답입니다!")
-                    st.session_state.correct_count += 1
-                    st.session_state.problem_history.append({'stage':2,'problem':practice,'correct':True})
-
-                    # 풀이과정 표시
-                    st.write("### 📖 풀이과정")
-                    st.write(f"""
-                    **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요
-
-                    $$\\frac{{{practice['numerator2']}}}{{{practice['denominator2']}}} \\rightarrow \\frac{{{practice['denominator2']}}}{{{practice['numerator2']}}}$$
-
-                    **Step 2:** 나눗셈을 곱셈으로 바꿔 계산해요
-
-                    $$\\frac{{{practice['numerator1']}}}{{{practice['denominator1']}}} \\times \\frac{{{practice['denominator2']}}}{{{practice['numerator2']}}} = \\frac{{{practice['numerator1'] * practice['denominator2']}}}{{{practice['denominator1'] * practice['numerator2']}}}$$
-
-                    **Step 3:** 약분하면
-
-                    $$= \\frac{{{practice['result_num']}}}{{{practice['result_den']}}}$$
-                    """)
-
-                    # 다음 문제로 이동
-                    st.session_state.stage2_practice_index += 1
-                    st.session_state.stage2_practice_attempts = 0
-
-                    if st.session_state.stage2_practice_index >= len(st.session_state.stage2_practice_problems):
-                        st.success("🎉 모든 연습문제를 완료했어요!")
-                        if st.button("완료", key="stage2_prac_complete"):
-                            # 연습 모드 종료
-                            for k in ['stage2_practice_problems','stage2_practice_index','stage2_practice_attempts','stage2_practice_solved_one','stage2_practice_mode','stage2_problem_backup']:
-                                if k in st.session_state:
-                                    del st.session_state[k]
-                            st.session_state.stage2_problem = generate_non_divisible_problem()
-                            st.session_state.stage2_choice = None
-                            st.session_state.stage2_attempts = 0
-                            safe_rerun()
-                    else:
-                        st.write(f"다음 문제로 넘어갑니다: {st.session_state.stage2_practice_index + 1}번 문제")
-                        if st.button("다음 문제", key=f"stage2_prac_next_{idx}"):
-                            safe_rerun()
-                else:
-                    st.session_state.stage2_practice_attempts += 1
-                    attempts = st.session_state.stage2_practice_attempts
-                    if attempts == 1:
-                        st.error("❌ 틀렸어요. 다시 시도해보세요!")
-                        if st.button("다시 풀기", key=f"stage2_prac_retry_a_{idx}"):
-                            safe_rerun()
-                    else:
-                        st.error("❌ 또 틀렸어요. 아래에 정답을 참고하세요.")
-                        st.write(f"정답: {practice['result_num']}/{practice['result_den']}")
-                        if st.button("다시 풀기", key=f"stage2_prac_retry_b_{idx}"):
-                            safe_rerun()
-        else:
-            # 기존 단일 문제 흐름 (연습 문제가 초기화되어 있지 않을 때)
-            st.write("### 답을 입력하세요")
-            c1, c2 = st.columns(2)
-            with c1:
-                user_n = st.number_input("분자", min_value=1, value=1, key="stage2_user_num")
-            with c2:
-                user_d = st.number_input("분모", min_value=1, value=1, key="stage2_user_den")
-
-            if st.button("✓ 답 제출", key="stage2_submit"):
-                if check_answer(user_n, user_d, problem['result_num'], problem['result_den']):
-                    st.success("🎉 정답입니다!")
-                    st.session_state.correct_count += 1
-                    st.session_state.problem_history.append({'stage':2,'problem':problem,'correct':True})
-                    # 풀이과정 표시
-                    st.write("### 📖 풀이과정")
-                    st.write(f"""
-                    **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요
-
-                    $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
-
-                    **Step 2:** 나눗셈을 곱셈으로 바꿔 계산해요
-
-                    $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
-
-                    **Step 3:** 약분하면
-
-                    $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
-                    """)
-                    # 정답을 맞춘 뒤 연습 문제 3개를 풀어볼 수 있도록 안내 버튼 제공
-                    if st.button("연습문제 3개 풀기", key="stage2_start_practice_from_single"):
-                        # 예시 문제를 백업해두고 실제 예시는 화면에서 제거
-                        st.session_state.stage2_problem_backup = problem
-                        if 'stage2_problem' in st.session_state:
-                            del st.session_state['stage2_problem']
-                        # 연습문제는 항상 백업된 문제 기준으로 새로 생성
-                        st.session_state.stage2_practice_problems = make_practice_problems(st.session_state.stage2_problem_backup, 3)
-                        st.session_state.stage2_practice_index = 0
-                        st.session_state.stage2_practice_attempts = 0
-                        st.session_state.stage2_practice_solved_one = False
-                        st.session_state.stage2_practice_mode = True
-                        st.session_state.stage2_choice = 'can'
-                        safe_rerun()
-                else:
-                    st.error("❌ 틀렸어요. 다시 확인해보세요!")
-                    st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
-
-    # 사용자가 '풀 수 없다'를 선택한 경우: 개념 설명과 풀이 제공
-    elif st.session_state.get('stage2_choice') == 'cannot' and not st.session_state.get('stage2_practice_mode', False):
-        st.write("### 왜 바로 나눌 수 없을까요?")
-        st.write("분자나 분모가 더 작은 수에 더 큰 수를 나누는 경우, 단순한 정수 나눗셈으로 딱 떨어지지 않을 수 있어요.")
-        st.write("이럴 때는 두 번째 분수의 역수를 이용해 곱셈으로 계산하면 정확히 풀 수 있어요. 아래에서 함께 계산해볼게요.")
-
-        # 풀이과정 보여주기
-        st.write("### 📖 풀이과정 (역수 사용)")
+            if st.button("➕ 더 연습하기", key="stage2_more_practice"):
+                # 새로운 문제 세트 생성
+                example = generate_non_divisible_problem()
+                st.session_state.stage2_example = example
+                st.session_state.stage2_problems = make_practice_problems(example, 3)
+                st.session_state.stage2_index = 0
+                st.session_state.stage2_attempts = 0
+                st.rerun()
+        st.stop()
+    
+    problem_index = st.session_state.stage2_index
+    problem = st.session_state.stage2_problems[problem_index]
+    
+    st.info(f"문제 {problem_index + 1} / 3")
+    
+    # 문제 출제
+    st.write(f"""
+    ### 문제
+    
+    다음 분수의 나눗셈을 계산하세요:
+    
+    $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$
+    """)
+    
+    # 힌트 표시
+    with st.expander("💡 힌트 보기"):
         st.write(f"""
-        문제:
-
-        $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\div \\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$$
-
-        **Step 1:** 두 번째 분수의 역수(뒤집기)
-
-        $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
-
-        **Step 2:** 곱셈으로 계산
-
-        $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
-
-        **Step 3:** 약분하여 최종 답
-
-        $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
+        **분수의 나눗셈은 역수를 이용해요!**
+        
+        1. 두 번째 분수를 뒤집어요 (역수)
+        2. 나눗셈을 곱셈으로 바꿔요
+        3. 분자끼리, 분모끼리 곱해요
+        4. 약분해요
+        
+        두 번째 분수: $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$ → 역수: $\\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$
         """)
-
-        # 선택지: 이제 풀 수 있다로 전환해서 답 입력 가능하도록 안내
-        if st.button("이제 풀 수 있다 (답 입력)", key="stage2_switch_to_can"):
-            st.session_state.stage2_choice = 'can'
-            # 예시 문제를 백업하고 화면에서 제거
-            st.session_state.stage2_problem_backup = problem
-            if 'stage2_problem' in st.session_state:
-                del st.session_state['stage2_problem']
-            # 연습 문제 3개를 항상 새로 생성 (백업된 문제 기준)
-            st.session_state.stage2_practice_problems = make_practice_problems(st.session_state.stage2_problem_backup, 3)
-            st.session_state.stage2_practice_index = 0
-            st.session_state.stage2_practice_attempts = 0
-            st.session_state.stage2_practice_solved_one = False
-            st.session_state.stage2_practice_mode = True
-            safe_rerun()
-
-# (학습 팁 섹션이 제거되었습니다)
+    
+    # 답 입력
+    st.write("### 답을 입력하세요")
+    col1, col2 = st.columns(2)
+    with col1:
+        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage2_{problem_index}")
+    with col2:
+        user_denominator = st.number_input("분모", min_value=1, value=1, key=f"den_stage2_{problem_index}")
+    
+    # 답 제출
+    if st.button("✓ 답 제출", key="submit_stage2"):
+        if check_answer(user_numerator, user_denominator, 
+                       problem['result_num'], problem['result_den']):
+            st.success("🎉 정답입니다!")
+            st.session_state.correct_count += 1
+            st.session_state.problem_history.append({
+                'stage': 2,
+                'problem': problem,
+                'correct': True
+            })
+            
+            # 풀이과정 표시
+            st.write("### 📖 풀이과정")
+            st.write(f"""
+            **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요 (역수)
+            
+            $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
+            
+            **Step 2:** 나눗셈을 곱셈으로 바꿔 계산해요
+            
+            $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
+            
+            **Step 3:** 약분하면
+            
+            $$= \\frac{{{problem['result_num']}}}{{{problem['result_den']}}}$$
+            """)
+            
+            # 다음 문제로 이동
+            st.session_state.stage2_index += 1
+            st.session_state.stage2_attempts = 0
+            
+            if st.session_state.stage2_index >= 3:
+                st.success("🎉 3문제를 모두 완료했어요!")
+                if st.button("완료", key="stage2_complete"):
+                    st.rerun()
+            else:
+                st.write(f"다음 문제로 넘어갑니다: {st.session_state.stage2_index + 1}번 문제")
+                if st.button("다음 문제", key="next_stage2"):
+                    st.rerun()
+        else:
+            # 오답 처리
+            st.session_state.stage2_attempts += 1
+            attempts = st.session_state.stage2_attempts
+            if attempts == 1:
+                st.error("❌ 틀렸어요. 힌트를 확인하고 다시 시도해보세요!")
+                if st.button("다시 풀기", key="retry_stage2_a"):
+                    st.rerun()
+            else:
+                st.error("❌ 또 틀렸어요. 아래에 정답을 참고하세요.")
+                st.write(f"정답: {problem['result_num']}/{problem['result_den']}")
+                if st.button("다시 풀기", key="retry_stage2_b"):
+                    st.rerun()
