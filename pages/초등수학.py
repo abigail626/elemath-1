@@ -674,16 +674,17 @@ elif st.session_state.stage == 2:
         
         st.markdown("""
         <div style='background-color: #ffccbc; padding: 20px; border-radius: 10px; border: 3px solid #ff5722;'>
-            <p style='font-size: 1.1em; margin-bottom: 15px;'>
+            <p style='font-size: 1.1em; margin-bottom: 10px;'>
                 <strong><span style='background-color: #ff9800; color: white; padding: 3px 10px; border-radius: 5px;'>역수란?</span></strong> 
                 분자와 분모를 뒤집은 분수예요.
             </p>
-            <ul style='font-size: 1.05em;'>
-                <li>$\\frac{3}{4}$의 역수 → $\\frac{4}{3}$</li>
-                <li>$\\frac{2}{5}$의 역수 → $\\frac{5}{2}$</li>
-            </ul>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.write("""
+        - $\\frac{3}{4}$의 역수 → $\\frac{4}{3}$
+        - $\\frac{2}{5}$의 역수 → $\\frac{5}{2}$
+        """)
         
         st.markdown("""
         <div style='background-color: #c8e6c9; padding: 20px; border-radius: 10px; border: 3px solid #4caf50; margin-top: 15px;'>
@@ -734,16 +735,17 @@ elif st.session_state.stage == 2:
         st.markdown("""
         <div style='background-color: #e1bee7; padding: 25px; border-radius: 15px; border: 4px solid #9c27b0;'>
             <h4 style='text-align: center; color: #6a1b9a; margin-bottom: 15px;'>✨ 정리 ✨</h4>
-            <p style='text-align: center; font-size: 1.2em; margin-bottom: 15px;'>
+            <p style='text-align: center; font-size: 1.2em; margin: 0;'>
                 <span style='background-color: #ce93d8; padding: 5px 15px; border-radius: 8px; font-weight: bold; font-size: 1.1em;'>
                     분수의 나눗셈 = 두 번째 분수를 뒤집어서 곱하기!
                 </span>
             </p>
-            <p style='text-align: center; font-size: 1.15em;'>
-                $\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$
-            </p>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.write("""
+        $$\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$$
+        """)
         
         st.write("")
         if st.button("✅ 이해했어요! 연습문제 풀러 가기 →", key="understand_concept"):
