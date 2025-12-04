@@ -341,7 +341,13 @@ elif st.session_state.stage == 2:
         st.session_state.stage2_choice = None
         st.session_state.stage2_attempts = 0
 
-    problem = st.session_state.stage2_problem
+    # 안전하게 세션 상태에서 문제를 가져옵니다. 키가 없으면 새 문제를 생성하여 초기화합니다.
+    problem = st.session_state.get('stage2_problem')
+    if problem is None:
+        st.session_state.stage2_problem = generate_non_divisible_problem()
+        st.session_state.stage2_choice = None
+        st.session_state.stage2_attempts = 0
+        problem = st.session_state.stage2_problem
 
     # 예시 문제 및 선택 버튼은 연습 모드가 활성화되어 있지 않을 때만 보여줍니다.
     # (플래그 또는 연습문제 리스트가 있으면 예시를 숨김)
