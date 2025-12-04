@@ -429,9 +429,9 @@ if st.session_state.stage == 1:
     st.write("### 답을 입력하세요")
     col1, col2 = st.columns(2)
     with col1:
-        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage1_{problem_index}")
-    with col2:
         user_denominator = st.number_input("분모", min_value=1, value=1, key=f"den_stage1_{problem_index}")
+    with col2:
+        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage1_{problem_index}")
     
     # 답 제출
     if st.button("✓ 답 제출", key="submit_stage1"):
@@ -664,9 +664,9 @@ elif st.session_state.stage == 2:
     st.write("### 답을 입력하세요")
     col1, col2 = st.columns(2)
     with col1:
-        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage2_{problem_index}")
-    with col2:
         user_denominator = st.number_input("분모", min_value=1, value=1, key=f"den_stage2_{problem_index}")
+    with col2:
+        user_numerator = st.number_input("분자", min_value=1, value=1, key=f"num_stage2_{problem_index}")
     
     # 답 제출
     if st.button("✓ 답 제출", key="submit_stage2"):
