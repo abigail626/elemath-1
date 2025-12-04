@@ -603,23 +603,43 @@ elif st.session_state.stage == 2:
         $$\\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\div \\frac{{{example['numerator2']}}}{{{example['denominator2']}}}$$
         
         분모끼리 나누어떨어지지 않아서 단계 1 방법으로는 풀기 어려워요.
-        하지만 **역수**를 이용하면 쉽게 풀 수 있어요! 🎯
         """)
+        
+        st.markdown("""
+        <div style='background-color: #fff59d; padding: 15px; border-radius: 10px; border-left: 5px solid #fbc02d;'>
+            <strong style='font-size: 1.1em;'>하지만 <span style='background-color: #ffeb3b; padding: 2px 8px; border-radius: 3px;'>역수</span>를 이용하면 쉽게 풀 수 있어요! 🎯</strong>
+        </div>
+        """, unsafe_allow_html=True)
         
         st.write("---")
         
         st.write("""
         ### 🔑 핵심 개념: 역수
-        
-        **역수란?** 분자와 분모를 뒤집은 분수예요.
-        
-        - $\\frac{3}{4}$의 역수 → $\\frac{4}{3}$
-        - $\\frac{2}{5}$의 역수 → $\\frac{5}{2}$
-        
-        **분수의 나눗셈 = 역수의 곱셈** ✨
-        
-        분수를 나누는 것은 역수를 곱하는 것과 같아요!
         """)
+        
+        st.markdown("""
+        <div style='background-color: #ffccbc; padding: 20px; border-radius: 10px; border: 3px solid #ff5722;'>
+            <p style='font-size: 1.1em; margin-bottom: 15px;'>
+                <strong><span style='background-color: #ff9800; color: white; padding: 3px 10px; border-radius: 5px;'>역수란?</span></strong> 
+                분자와 분모를 뒤집은 분수예요.
+            </p>
+            <ul style='font-size: 1.05em;'>
+                <li>$\\frac{3}{4}$의 역수 → $\\frac{4}{3}$</li>
+                <li>$\\frac{2}{5}$의 역수 → $\\frac{5}{2}$</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div style='background-color: #c8e6c9; padding: 20px; border-radius: 10px; border: 3px solid #4caf50; margin-top: 15px;'>
+            <p style='font-size: 1.2em; text-align: center; margin: 0;'>
+                <strong><span style='background-color: #8bc34a; color: white; padding: 5px 15px; border-radius: 5px; font-size: 1.1em;'>분수의 나눗셈 = 역수의 곱셈</span></strong> ✨
+            </p>
+            <p style='text-align: center; margin-top: 10px; font-size: 1.05em;'>
+                분수를 나누는 것은 역수를 곱하는 것과 같아요!
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
         st.write("---")
         
@@ -627,12 +647,21 @@ elif st.session_state.stage == 2:
         ### 📖 풀이 과정
         
         $$\\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\div \\frac{{{example['numerator2']}}}{{{example['denominator2']}}}$$
+        """)
         
-        **Step 1:** 두 번째 분수의 역수를 구해요
+        st.markdown(f"""
+        <p><strong>Step 1:</strong> 두 번째 분수의 <span style='background-color: #ffeb3b; padding: 2px 8px; border-radius: 3px; font-weight: bold;'>역수</span>를 구해요</p>
+        """, unsafe_allow_html=True)
         
+        st.write(f"""
         $$\\frac{{{example['numerator2']}}}{{{example['denominator2']}}} \\text{{의 역수}} = \\frac{{{example['denominator2']}}}{{{example['numerator2']}}}$$
+        """)
         
-        **Step 2:** 나눗셈을 역수의 곱셈으로 바꿔요
+        st.markdown(f"""
+        <p><strong>Step 2:</strong> 나눗셈을 <span style='background-color: #a5d6a7; padding: 2px 8px; border-radius: 3px; font-weight: bold;'>역수의 곱셈</span>으로 바꿔요</p>
+        """, unsafe_allow_html=True)
+        
+        st.write(f"""
         
         $$\\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\div \\frac{{{example['numerator2']}}}{{{example['denominator2']}}} = \\frac{{{example['numerator1']}}}{{{example['denominator1']}}} \\times \\frac{{{example['denominator2']}}}{{{example['numerator2']}}}$$
         
@@ -647,13 +676,19 @@ elif st.session_state.stage == 2:
         
         st.write("---")
         
-        st.success("""
-        ✨ **정리**
-        
-        분수의 나눗셈 = 두 번째 분수를 뒤집어서 곱하기!
-        
-        $\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$
-        """)
+        st.markdown("""
+        <div style='background-color: #e1bee7; padding: 25px; border-radius: 15px; border: 4px solid #9c27b0;'>
+            <h4 style='text-align: center; color: #6a1b9a; margin-bottom: 15px;'>✨ 정리 ✨</h4>
+            <p style='text-align: center; font-size: 1.2em; margin-bottom: 15px;'>
+                <span style='background-color: #ce93d8; padding: 5px 15px; border-radius: 8px; font-weight: bold; font-size: 1.1em;'>
+                    분수의 나눗셈 = 두 번째 분수를 뒤집어서 곱하기!
+                </span>
+            </p>
+            <p style='text-align: center; font-size: 1.15em;'>
+                $\\frac{a}{b} \\div \\frac{c}{d} = \\frac{a}{b} \\times \\frac{d}{c}$
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
         st.write("")
         if st.button("✅ 이해했어요! 연습문제 풀러 가기 →", key="understand_concept"):
@@ -665,10 +700,14 @@ elif st.session_state.stage == 2:
     # 연습문제 단계
     st.write("""
     **분수의 나눗셈 - 연습문제**
-    
-    역수를 이용하면 어떤 분수든 나눌 수 있어요! 💪
-    이제 3문제를 풀어보세요!
     """)
+    
+    st.markdown("""
+    <div style='background-color: #b2dfdb; padding: 12px; border-radius: 8px; border-left: 5px solid #00897b; margin-bottom: 15px;'>
+        <strong style='font-size: 1.05em;'><span style='background-color: #4db6ac; color: white; padding: 2px 8px; border-radius: 3px;'>역수</span>를 이용하면 어떤 분수든 나눌 수 있어요! 💪</strong><br>
+        이제 3문제를 풀어보세요!
+    </div>
+    """, unsafe_allow_html=True)
     
     # 2단계에서는 연속 3문제를 풀도록 구성
     if 'stage2_problems' not in st.session_state or len(st.session_state.get('stage2_problems', [])) < 3:
@@ -733,14 +772,19 @@ elif st.session_state.stage == 2:
     
     # 힌트 표시
     with st.expander("💡 힌트 보기"):
+        st.markdown(f"""
+        <div style='background-color: #fff9c4; padding: 15px; border-radius: 8px; border-left: 5px solid #f57f17;'>
+            <p><strong>분수의 나눗셈은 <span style='background-color: #ffeb3b; padding: 2px 8px; border-radius: 3px; font-weight: bold;'>역수</span>를 이용해요!</strong></p>
+            <ol>
+                <li>두 번째 분수를 뒤집어요 (<span style='background-color: #ffeb3b; padding: 2px 6px; border-radius: 3px;'>역수</span>)</li>
+                <li>나눗셈을 <span style='background-color: #a5d6a7; padding: 2px 6px; border-radius: 3px;'>곱셈</span>으로 바꿔요</li>
+                <li>분자끼리, 분모끼리 곱해요</li>
+                <li>약분해요</li>
+            </ol>
+        </div>
+        """, unsafe_allow_html=True)
+        
         st.write(f"""
-        **분수의 나눗셈은 역수를 이용해요!**
-        
-        1. 두 번째 분수를 뒤집어요 (역수)
-        2. 나눗셈을 곱셈으로 바꿔요
-        3. 분자끼리, 분모끼리 곱해요
-        4. 약분해요
-        
         두 번째 분수: $\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}}$ → 역수: $\\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$
         """)
     
@@ -766,12 +810,20 @@ elif st.session_state.stage == 2:
             
             # 풀이과정 표시
             st.write("### 📖 풀이과정")
+            
+            st.markdown(f"""
+            <p><strong>Step 1:</strong> 두 번째 분수의 분자와 분모를 뒤집어요 (<span style='background-color: #ffeb3b; padding: 2px 8px; border-radius: 3px; font-weight: bold;'>역수</span>)</p>
+            """, unsafe_allow_html=True)
+            
             st.write(f"""
-            **Step 1:** 두 번째 분수의 분자와 분모를 뒤집어요 (역수)
-            
             $$\\frac{{{problem['numerator2']}}}{{{problem['denominator2']}}} \\rightarrow \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}}$$
+            """)
             
-            **Step 2:** 나눗셈을 곱셈으로 바꿔 계산해요
+            st.markdown("""
+            <p><strong>Step 2:</strong> 나눗셈을 <span style='background-color: #a5d6a7; padding: 2px 8px; border-radius: 3px; font-weight: bold;'>곱셈</span>으로 바꿔 계산해요</p>
+            """, unsafe_allow_html=True)
+            
+            st.write(f"""
             
             $$\\frac{{{problem['numerator1']}}}{{{problem['denominator1']}}} \\times \\frac{{{problem['denominator2']}}}{{{problem['numerator2']}}} = \\frac{{{problem['numerator1'] * problem['denominator2']}}}{{{problem['denominator1'] * problem['numerator2']}}}$$
             
