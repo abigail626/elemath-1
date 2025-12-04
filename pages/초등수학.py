@@ -49,6 +49,13 @@ def generate_divisible_problem():
             continue
 
         numerator1 = random.choice(larger)
+        
+        # 각 분수가 기약분수인지 확인 (분자≠분모, gcd=1)
+        if numerator1 == denominator1 or gcd(numerator1, denominator1) != 1:
+            continue
+        if numerator2 == denominator2 or gcd(numerator2, denominator2) != 1:
+            continue
+        
         # 조건을 만족하면 결과 계산 후 '정수 결과'인지 확인
         result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
         if result.denominator == 1:
@@ -92,6 +99,21 @@ def generate_divisible_problem():
         result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
     else:
         numerator1 = chosen
+    
+    # 각 분수를 기약분수로 만들기
+    gcd1 = gcd(numerator1, denominator1)
+    numerator1 //= gcd1
+    denominator1 //= gcd1
+    
+    gcd2 = gcd(numerator2, denominator2)
+    numerator2 //= gcd2
+    denominator2 //= gcd2
+    
+    # 분자와 분모가 같으면 다시 조정 (1/1, 2/2 방지)
+    if numerator1 == denominator1:
+        numerator1 = numerator1 * 2 if numerator1 < 6 else numerator1 - 1
+    if numerator2 == denominator2:
+        numerator2 = numerator2 * 2 if numerator2 < 6 else numerator2 - 1
     
     # 실제 나눗셈 결과 계산
     result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
@@ -152,6 +174,10 @@ def generate_non_divisible_problem():
         numerator2 //= gcd2
         denominator2 //= gcd2
         
+        # 분자와 분모가 같으면 스킵 (1/1, 2/2 방지)
+        if numerator1 == denominator1 or numerator2 == denominator2:
+            continue
+        
         # 역수로 곱셈할 때 약분이 가능한지 확인
         # numerator1과 numerator2(역수의 분모)의 최대공약수
         gcd_cross1 = gcd(numerator1, numerator2)
@@ -172,17 +198,42 @@ def generate_non_divisible_problem():
             }
     
     # 100번 시도해도 실패하면 기본 방식으로 생성 (약분 가능 보장 안됨)
-    numerator1 = random.randint(2, 9)
-    denominator1 = random.randint(2, 12)
-    numerator2 = random.randint(2, 9)
-    denominator2 = random.randint(2, 12)
-    
-    # 나누어 떨어지지 않는 경우를 확보
-    while numerator1 * denominator2 % (denominator1 * numerator2) == 0:
+    for _ in range(100):
+        numerator1 = random.randint(2, 9)
+        denominator1 = random.randint(2, 12)
         numerator2 = random.randint(2, 9)
         denominator2 = random.randint(2, 12)
+        
+        # 기약분수로 만들기
+        gcd1 = gcd(numerator1, denominator1)
+        numerator1 //= gcd1
+        denominator1 //= gcd1
+        
+        gcd2 = gcd(numerator2, denominator2)
+        numerator2 //= gcd2
+        denominator2 //= gcd2
+        
+        # 분자와 분모가 같으면 스킵
+        if numerator1 == denominator1 or numerator2 == denominator2:
+            continue
+        
+        # 나누어 떨어지지 않는 경우인지 확인
+        if numerator1 * denominator2 % (denominator1 * numerator2) == 0:
+            continue
+        
+        result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
+        return {
+            'numerator1': numerator1,
+            'denominator1': denominator1,
+            'numerator2': numerator2,
+            'denominator2': denominator2,
+            'result': result,
+            'result_num': result.numerator,
+            'result_den': result.denominator
+        }
     
-    result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
+    # 최후의 수단: 간단한 기약분수 반환
+    result = Fraction(2, 3) / Fraction(3, 5)
     
     return {
         'numerator1': numerator1,
