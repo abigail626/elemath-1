@@ -138,21 +138,27 @@ def make_practice_problems(example_problem, n=3):
     """
     problems = []
     seen = set()
+    # 예시 문제를 seen에 추가
+    ex_key = (example_problem['numerator1'], example_problem['denominator1'], 
+              example_problem['numerator2'], example_problem['denominator2'])
+    seen.add(ex_key)
+    
     attempts = 0
-    while len(problems) < n and attempts < 1000:
+    max_attempts = 5000  # 충분한 시도 횟수
+    
+    while len(problems) < n and attempts < max_attempts:
         p = generate_non_divisible_problem()
         key = (p['numerator1'], p['denominator1'], p['numerator2'], p['denominator2'])
-        ex_key = (example_problem['numerator1'], example_problem['denominator1'], example_problem['numerator2'], example_problem['denominator2'])
         attempts += 1
-        if key == ex_key:
-            continue
+        
+        # 이미 본 문제면 스킵
         if key in seen:
             continue
+            
+        # 새로운 문제 추가
         seen.add(key)
         problems.append(p)
-    # 부족하면 기존 방식으로 채움(중복 허용)
-    while len(problems) < n:
-        problems.append(generate_non_divisible_problem())
+    
     return problems
 
 def check_answer(user_num, user_den, correct_num, correct_den):
