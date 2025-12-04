@@ -112,16 +112,18 @@ def generate_divisible_problem():
             # 나눗셈 결과가 정수인지 확인
             result = Fraction(n1, d1) / Fraction(n2, d2)
             if result.denominator == 1:
-                # 정수 결과를 찾았으면 반환
-                return {
-                    'numerator1': n1,
-                    'denominator1': d1,
-                    'numerator2': n2,
-                    'denominator2': d2,
-                    'result': result,
-                    'result_num': result.numerator,
-                    'result_den': result.denominator
-                }
+                # 두 분수의 분모가 다른지 확인
+                if d1 != d2:
+                    # 정수 결과를 찾았으면 반환
+                    return {
+                        'numerator1': n1,
+                        'denominator1': d1,
+                        'numerator2': n2,
+                        'denominator2': d2,
+                        'result': result,
+                        'result_num': result.numerator,
+                        'result_den': result.denominator
+                    }
     
     # 최후의 수단: 간단한 예시 (4/6 ÷ 2/3 = 1)
     numerator1 = 4
@@ -235,6 +237,10 @@ def generate_non_divisible_problem():
         
         # 나누어 떨어지지 않는 경우인지 확인
         if numerator1 * denominator2 % (denominator1 * numerator2) == 0:
+            continue
+        
+        # 두 분수의 분모가 다른지 확인
+        if denominator1 == denominator2:
             continue
         
         result = Fraction(numerator1, denominator1) / Fraction(numerator2, denominator2)
