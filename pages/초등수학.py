@@ -335,7 +335,36 @@ if st.session_state.stage == 1:
     
     # 1단계에서는 연속 3문제를 풀도록 구성
     if 'stage1_problems' not in st.session_state or len(st.session_state.get('stage1_problems', [])) < 3:
-        st.session_state.stage1_problems = [generate_divisible_problem() for _ in range(3)]
+        # 3개의 서로 다른 문제를 생성 (중복 없이)
+        stage1_problems = []
+        seen_problems = set()
+        attempts = 0
+        max_attempts = 1000
+        
+        while len(stage1_problems) < 3 and attempts < max_attempts:
+            p = generate_divisible_problem()
+            problem_key = (p['numerator1'], p['denominator1'], p['numerator2'], p['denominator2'])
+            attempts += 1
+            
+            # 이미 생성된 문제면 스킵
+            if problem_key in seen_problems:
+                continue
+            
+            # 너무 단순한 패턴 추가 체크: 결과가 1이 아닌 다양한 답이 나오도록
+            # 한 문제 정도는 결과가 1이 아닌 것으로
+            if len(stage1_problems) == 0 or len(stage1_problems) == 2:
+                # 첫 번째, 세 번째 문제는 결과가 다양하도록
+                if p['result_num'] == 1 and random.random() < 0.3:  # 30% 확률로 스킵 (결과=1인 경우)
+                    continue
+            elif len(stage1_problems) == 1:
+                # 두 번째 문제는 결과가 1이 아닌 것으로
+                if p['result_num'] == 1 and random.random() < 0.7:  # 70% 확률로 스킵
+                    continue
+            
+            seen_problems.add(problem_key)
+            stage1_problems.append(p)
+        
+        st.session_state.stage1_problems = stage1_problems
         st.session_state.stage1_index = 0
         st.session_state.stage1_attempts = 0
 
